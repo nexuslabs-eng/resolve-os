@@ -1,0 +1,1 @@
+# ResolveOS Frontend App

@@ -1,0 +1,42 @@
+name: ResolveOS Core CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  node-environment-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js Runtime
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Verify Workspace Structure
+        run: |
+          echo "Checking monorepo layout..."
+          test -d apps/frontend || exit 1
+          test -d apps/backend || exit 1
+          echo "Node core paths verified successfully."
+
+  python-environment-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python Runtime
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Verify AI Service Directory
+        run: |
+          test -d apps/ai || exit 1
+          echo "Python AI path verified successfully."
