@@ -109,12 +109,11 @@ approval before recovery is verified.
 resolve-os/
 ├── apps/
 │   ├── frontend/
-│   ├── backend-api/
-│   └── ai-service/
-├── packages/
-│   └── contracts/
+│   ├── backend/
+│   └── ai/
 ├── docs/
-└── e2e/
+└── packages/
+    └── contracts/
 ```
 
 ## Documentation
