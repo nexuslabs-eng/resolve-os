@@ -112,10 +112,8 @@ resolve-os/
 │   ├── backend/
 │   └── ai/
 ├── docs/
-├── packages/
-│   └── contracts/
-
-└── e2e/
+└── packages/
+    └── contracts/
 ```
 
 ## Documentation
