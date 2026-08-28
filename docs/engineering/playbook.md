@@ -113,7 +113,7 @@ resolve-os/
 │   │       ├── store/
 │   │       └── types/
 │   │
-│   ├── backend-api/
+│   ├── backend/
 │   │   ├── prisma/
 │   │   └── src/
 │   │       ├── middleware/
@@ -122,7 +122,7 @@ resolve-os/
 │   │       ├── infrastructure/
 │   │       └── simulation/
 │   │
-│   └── ai-service/
+│   └── ai/
 │       └── src/
 │           ├── api/
 │           ├── graph/
@@ -131,10 +131,10 @@ resolve-os/
 │           ├── tools/
 │           └── prompts/
 │
-├── packages/
-│   └── contracts/
+├── docs/
 ├── e2e/
-└── docs/
+└── packages/
+    └── contracts/
 ```
 
 `packages/contracts` defines the shared API shapes used by mocks,

@@ -1,0 +1,14 @@
+{
+  "name": "resolve-os",
+  "private": true,
+  "version": "1.0.0",
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "11.24.0",
+      "onFail": "download"
+    }
+  },
+  "packageManager": "pnpm@11.24.0",
+  "type": "module"
+}
