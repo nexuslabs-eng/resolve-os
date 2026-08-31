@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { DateTimeSchema, IdSchema } from "@/common/primitives";
-import { ServiceHealthStatusSchema } from "@/common/enums";
+import { DateTimeSchema, IdSchema } from "../common/primitives";
+import { ServiceHealthStatusSchema } from "../common/enums";
 
 export const ServiceSchema = z.object({
     id: IdSchema,

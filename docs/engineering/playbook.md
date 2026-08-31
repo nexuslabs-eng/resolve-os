@@ -108,8 +108,10 @@ resolve-os/
 │   │       ├── app/
 │   │       ├── components/
 │   │       ├── features/
+│   │       ├── hooks/
 │   │       ├── mocks/
 │   │       ├── services/
+│   │       ├── routes/
 │   │       ├── store/
 │   │       └── types/
 │   │

@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { EvidenceQualitySchema, HypothesisStatusSchema } from "@/common/enums";
-import { DateTimeSchema, IdSchema, ScoreSchema } from "@/common/primitives";
+import { EvidenceQualitySchema, HypothesisStatusSchema } from "../common/enums";
+import { DateTimeSchema, IdSchema, ScoreSchema } from "../common/primitives";
 
 export const HypothesisSchema = z.object({
     id: IdSchema,

@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { RoleSchema } from "@/common/enums";
-import { IdSchema } from "@/common/primitives";
+import { RoleSchema } from "../common/enums";
+import { IdSchema } from "../common/primitives";
 
 export const ApprovalPolicySchema = z.object({
     recommendationId: IdSchema,

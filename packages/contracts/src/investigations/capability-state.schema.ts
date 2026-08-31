@@ -1,6 +1,6 @@
 import  { z } from "zod";
-import { CapabilityNameSchema, CapabilityStatusSchema } from "@/common/enums";
-import { DateTimeSchema, ScoreSchema } from "@/common/primitives";
+import { CapabilityNameSchema, CapabilityStatusSchema } from "../common/enums";
+import { DateTimeSchema, ScoreSchema } from "../common/primitives";
 
 export const CapabilityStateSchema = z.object({
     capability: CapabilityNameSchema,

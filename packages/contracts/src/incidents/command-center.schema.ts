@@ -1,15 +1,15 @@
 import { z } from "zod";
 import { IncidentSchema } from "./incident.schema";
-import { InvestigationSchema } from "@/investigations/investigation.schema";
-import { HypothesisSchema } from "@/investigations/hypothesis.schema";
-import { EvidenceSchema } from "@/investigations/evidence.schema";
-import { EvidenceHypothesisRelationSchema } from "@/investigations/evidence-relation.schema";
-import { InvestigationIntegritySchema } from "@/investigations/investigation-integrity.schema";
-import { CapabilityStateSchema } from "@/investigations/capability-state.schema";
-import { RecommendationSchema } from "@/recommendations/recommendation.schema";
-import { ApprovalPolicySchema } from "@/recommendations/approval-policy.schema";
-import { RemediationSchema } from "@/recommendations/remediation.schema";
-import { VerificationSchema } from "@/recommendations/verification.schema";
+import { InvestigationSchema } from "../investigations/investigation.schema";
+import { HypothesisSchema } from "../investigations/hypothesis.schema";
+import { EvidenceSchema } from "../investigations/evidence.schema";
+import { EvidenceHypothesisRelationSchema } from "../investigations/evidence-relation.schema";
+import { InvestigationIntegritySchema } from "../investigations/investigation-integrity.schema";
+import { CapabilityStateSchema } from "../investigations/capability-state.schema";
+import { RecommendationSchema } from "../recommendations/recommendation.schema";
+import { ApprovalPolicySchema } from "../recommendations/approval-policy.schema";
+import { RemediationSchema } from "../recommendations/remediation.schema";
+import { VerificationSchema } from "../recommendations/verification.schema";
 
 export const IncidentCommandCenterSchema = z.object({
     incident: IncidentSchema,
@@ -25,4 +25,7 @@ export const IncidentCommandCenterSchema = z.object({
     verification: VerificationSchema.nullable(),
 });
 
+export const CommandCenterSchema = IncidentCommandCenterSchema;
+
 export type IncidentCommandCenter = z.infer<typeof IncidentCommandCenterSchema>;
+export type CommandCenter = IncidentCommandCenter;

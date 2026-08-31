@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { ContradictionSeveritySchema, EvidenceRelationTypeSchema } from "@/common/enums";
-import { IdSchema, ScoreSchema } from "@/common/primitives";
+import { ContradictionSeveritySchema, EvidenceRelationTypeSchema } from "../common/enums";
+import { IdSchema, ScoreSchema } from "../common/primitives";
 
 export const EvidenceHypothesisRelationSchema = z.object({
     id: IdSchema,

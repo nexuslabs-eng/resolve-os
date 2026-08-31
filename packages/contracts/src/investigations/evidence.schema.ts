@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { EvidenceSourceTypeSchema } from "@/common/enums";
-import { DateTimeSchema, IdSchema, ScoreSchema } from "@/common/primitives";
+import { EvidenceSourceTypeSchema } from "../common/enums";
+import { DateTimeSchema, IdSchema, ScoreSchema } from "../common/primitives";
 
 export const EvidenceProvenanceSchema = z.object({
     tool: z.string().nullable(),
