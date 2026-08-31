@@ -3,8 +3,8 @@ import {
     RecommendationActionTypeSchema,
     RemediationExecutionModeSchema,
     RemediationStatusSchema
-} from "@/common/enums";
-import { DateTimeSchema, IdSchema } from "@/common/primitives";
+} from "../common/enums";
+import { DateTimeSchema, IdSchema } from "../common/primitives";
 
 export const RemediationResultSchema = z.object({
     success: z.boolean(),

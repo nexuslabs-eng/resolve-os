@@ -4,8 +4,8 @@ import {
     IntegrityLevelSchema,
     RecommendationActionTypeSchema,
     TechnicalRiskSchema 
-} from "@/common/enums";
-import { DateTimeSchema, IdSchema } from "@/common/primitives";
+} from "../common/enums";
+import { DateTimeSchema, IdSchema } from "../common/primitives";
 
 export const RecommendationSchema = z.object({
     id: IdSchema,

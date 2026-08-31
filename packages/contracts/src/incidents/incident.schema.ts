@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { IncidentSeveritySchema, IncidentStatusSchema } from "@/common/enums";
-import { DateTimeSchema, IdSchema } from "@/common/primitives";
+import { IncidentSeveritySchema, IncidentStatusSchema } from "../common/enums";
+import { DateTimeSchema, IdSchema } from "../common/primitives";
 
 export const IncidentSchema = z.object({
     id: IdSchema,
