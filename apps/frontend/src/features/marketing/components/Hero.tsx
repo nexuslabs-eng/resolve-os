@@ -1,11 +1,15 @@
+import { useNavigate } from "react-router-dom";
 import { ArrowRight, BookText } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { IncidentCommandCenter } from "@/features/marketing/components/incident-command-center";
 
 const Hero = () => {
+  const navigate = useNavigate();
+  
   return (
     <section id="top" className="relative overflow-hidden">
       <div className="grid-backdrop pointer-events-none absolute inset-0 mask-[radial-gradient(120%_70%_at_50%_0%,black,transparent_75%)]" />
+      
       <div
         className="pointer-events-none absolute left-1/2 -top-72 h-136 w-5xl -translate-x-1/2 rounded-full opacity-[0.16] blur-3xl"
         style={{ background: "radial-gradient(closest-side, var(--primary), transparent)" }}
@@ -31,14 +35,20 @@ const Hero = () => {
               Request Access
               <ArrowRight className="h-4 w-4" />
             </Button>
-            <Button variant="ghost" size="lg"  className="w-full  sm:w-auto">
-              <Link 
-              to="data-flow-test/11111111-1111-4111-8111-111111111111" className="w-full sm:w-auto flex justify-center gap-2 items-center">
-                <BookText className="h-4 w-4" />
-                See how it works
-              </Link>
+            <Button 
+              variant="ghost" 
+              size="lg"  
+              className="w-full sm:w-auto justify-center gap-2 items-center"
+              onClick={() => navigate("data-flow-test/11111111-1111-4111-8111-111111111111")}
+            >
+              <BookText className="h-4 w-4" />
+              See how it works
             </Button>
           </div>
+        </div>
+
+        <div className="mx-auto mt-14 max-w-5xl sm:mt-16">
+          <IncidentCommandCenter />
         </div>
 
       </div>

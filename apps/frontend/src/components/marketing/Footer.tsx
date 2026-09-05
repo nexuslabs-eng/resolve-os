@@ -1,4 +1,4 @@
-import { ResolutionNode } from "@/features/landing/brand/ResolutionNode";
+import { ResolutionNode } from "@/components/brand/ResolutionNode";
 
 const GROUPS = [
   { title: "Product", links: ["Product", "How it works", "Why ResolveOS", "Security"] },
