@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { Menu, Moon, Sun, X } from "lucide-react";
-import { ResolutionNode } from "@/features/landing/brand/ResolutionNode";
-import { Button } from "@/components/ui/button";
-import { useThemeStore } from "@/stores/use-theme-store";
+import { Menu, X } from "lucide-react";
 import { useUiStore } from "@/stores/use-ui-store";
+import { ResolutionNode } from "@/components/brand/ResolutionNode";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
@@ -18,8 +18,6 @@ const Navbar = () => {
   const mobileNavOpen = useUiStore((s) => s.mobileNavOpen);
   const toggleMobileNav = useUiStore((s) => s.toggleMobileNav);
   const setMobileNavOpen = useUiStore((s) => s.setMobileNavOpen);
-  const theme = useThemeStore((s) => s.theme);
-  const toggleTheme = useThemeStore((s) => s.toggleTheme);
 
 
   useEffect(() => {
@@ -73,44 +71,22 @@ const Navbar = () => {
               </Button>
             </div>
 
+            <ThemeToggle />
+
             <Button
               type="button"
-              variant="subtle"
               size="icon"
-              onClick={toggleTheme}
-              aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
-              title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
-              className="group relative ml-auto overflow-hidden border-primary/15 bg-surface-inset text-muted-foreground shadow-[inset_0_1px_0_var(--hairline)] hover:border-primary/35 hover:text-primary-bright md:ml-0"
-            >
-              <span className="relative h-4 w-4" aria-hidden="true">
-                <Sun
-                  className={cn(
-                    "absolute inset-0 transition-[opacity,transform] duration-300 ease-out",
-                    theme === "light"
-                      ? "rotate-0 scale-100 opacity-100"
-                      : "rotate-90 scale-0 opacity-0",
-                  )}
-                />
-                <Moon
-                  className={cn(
-                    "absolute inset-0 transition-[opacity,transform] duration-300 ease-out",
-                    theme === "dark"
-                      ? "rotate-0 scale-100 opacity-100"
-                      : "-rotate-90 scale-0 opacity-0",
-                  )}
-                />
-              </span>
-            </Button>
-
-            <button
-              type="button"
+              variant="subtle"
               onClick={toggleMobileNav}
               aria-expanded={mobileNavOpen}
               aria-label={mobileNavOpen ? "Close menu" : "Open menu"}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border text-muted-foreground transition-colors hover:text-foreground md:hidden"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border text-muted-foreground transition-colors hover:text-foreground md:hidden cursor-pointer"
             >
-              {mobileNavOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
-            </button>
+              {mobileNavOpen 
+                ? <X className="h-4 w-4" /> 
+                : <Menu className="h-4 w-4" />
+              }
+            </Button>
           </div>
 
           {mobileNavOpen && (
@@ -131,7 +107,7 @@ const Navbar = () => {
                     Sign in
                   </Button>
                   <Button variant="brand" size="sm">
-                    Get started
+                    Request Access
                   </Button>
                 </div>
               </nav>

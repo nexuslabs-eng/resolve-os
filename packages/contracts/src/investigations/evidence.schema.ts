@@ -10,6 +10,7 @@ export const EvidenceProvenanceSchema = z.object({
 
 export const EvidenceSchema = z.object({
     id: IdSchema,
+    reference: z.string().trim().regex(/^EV-\d+$/),
     investigationId: IdSchema,
     source: z.string(),
     sourceType: EvidenceSourceTypeSchema,
