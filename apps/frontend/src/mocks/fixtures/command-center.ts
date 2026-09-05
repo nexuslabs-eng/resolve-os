@@ -3,6 +3,7 @@ import { CommandCenterSchema, type CommandCenter } from "contracts";
 const fixture = {
   incident: {
     id: "11111111-1111-4111-8111-111111111111",
+    reference: "INC-1042",
     organizationId: "22222222-2222-4222-8222-222222222222",
     serviceId: "33333333-3333-4333-8333-333333333333",
     title: "Checkout payment latency spike",
@@ -31,6 +32,7 @@ const fixture = {
   hypotheses: [
     {
       id: "66666666-6666-4666-8666-666666666666",
+      reference: "H1",
       investigationId: "55555555-5555-4555-8555-555555555555",
       statement: "A recent checkout deployment introduced a payment regression.",
       status: "WEAKENED",
@@ -45,6 +47,7 @@ const fixture = {
     },
     {
       id: "77777777-7777-4777-8777-777777777777",
+      reference: "H2",
       investigationId: "55555555-5555-4555-8555-555555555555",
       statement: "The external payment provider is degraded in the primary region.",
       status: "LEADING",
@@ -59,6 +62,7 @@ const fixture = {
     },
     {
       id: "88888888-8888-4888-8888-888888888888",
+      reference: "H3",
       investigationId: "55555555-5555-4555-8555-555555555555",
       statement: "Database connection exhaustion is slowing checkout writes.",
       status: "LEADING",
@@ -75,6 +79,7 @@ const fixture = {
   evidences: [
     {
       id: "99999999-9999-4999-8999-999999999999",
+      reference: "EV-18",
       investigationId: "55555555-5555-4555-8555-555555555555",
       source: "deployment-history",
       sourceType: "DEPLOYMENT",
@@ -94,6 +99,7 @@ const fixture = {
     },
     {
       id: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+      reference: "EV-24",
       investigationId: "55555555-5555-4555-8555-555555555555",
       source: "synthetic-payment-check",
       sourceType: "SERVICE_HEALTH",
@@ -114,6 +120,7 @@ const fixture = {
     },
     {
       id: "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+      reference: "EV-31",
       investigationId: "55555555-5555-4555-8555-555555555555",
       source: "provider-metrics",
       sourceType: "METRIC",
@@ -134,6 +141,7 @@ const fixture = {
     },
     {
       id: "cccccccc-cccc-4ccc-8ccc-cccccccccccc",
+      reference: "EV-33",
       investigationId: "55555555-5555-4555-8555-555555555555",
       source: "log-search",
       sourceType: "LOG",

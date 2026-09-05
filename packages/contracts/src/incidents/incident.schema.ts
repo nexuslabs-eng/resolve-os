@@ -4,6 +4,7 @@ import { DateTimeSchema, IdSchema } from "../common/primitives";
 
 export const IncidentSchema = z.object({
     id: IdSchema,
+    reference: z.string().trim().regex(/^INC-\d+$/),
     organizationId: IdSchema,
     serviceId: IdSchema,
     title: z.string(),

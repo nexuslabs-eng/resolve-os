@@ -4,6 +4,7 @@ import { DateTimeSchema, IdSchema, ScoreSchema } from "../common/primitives";
 
 export const HypothesisSchema = z.object({
     id: IdSchema,
+    reference: z.string().trim().regex(/^H\d+$/),
     investigationId: IdSchema,
     statement: z.string(),
     status: HypothesisStatusSchema,

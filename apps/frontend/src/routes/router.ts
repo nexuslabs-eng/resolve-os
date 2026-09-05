@@ -1,8 +1,8 @@
 import { createBrowserRouter } from "react-router-dom";
 
 import App from "@/App";
+import MarketingPage from "@/features/marketing/MarketingPage";
 import { CommandCenterDataFlowTest } from "@/features/command-center/components/command-center-data-flow-test";
-import LandingPage from "@/features/landing/LandingPage";
 
 export const router = createBrowserRouter([
   {
@@ -11,7 +11,7 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        Component: LandingPage,
+        Component: MarketingPage,
       },
       {
         path: "data-flow-test/:incidentId",
