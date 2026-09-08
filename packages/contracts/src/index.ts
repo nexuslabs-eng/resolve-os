@@ -30,3 +30,7 @@ export * from "./events/sse-event.schema.js";
 
 export * from "./internal-ai/investigation-request.schema.js";
 export * from "./internal-ai/investigation-result.schema.js";
+
+export * from "./auth/index.js";
+export * from "./onboarding/index.js";
+export * from "./invitations/index.js";
