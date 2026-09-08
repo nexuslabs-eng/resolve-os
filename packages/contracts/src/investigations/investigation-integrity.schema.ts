@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { IntegrityLevelSchema } from "../common/enums";
-import { ScoreSchema } from "../common/primitives";
+import { IntegrityLevelSchema } from "../common/enums.js";
+import { ScoreSchema } from "../common/primitives.js";
 
 export const InvestigationIntegritySchema = z.object({
     level: IntegrityLevelSchema,

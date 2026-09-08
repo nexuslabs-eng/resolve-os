@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { IncidentSeveritySchema } from "../common/enums";
-import { IdSchema } from "../common/primitives";
-import { CapabilityStateSchema } from "../investigations/capability-state.schema";
+import { IncidentSeveritySchema } from "../common/enums.js";
+import { IdSchema } from "../common/primitives.js";
+import { CapabilityStateSchema } from "../investigations/capability-state.schema.js";
 
 export const StartAIInvestigationRequestSchema = z.object({
     investigationId: IdSchema,

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { DateTimeSchema, IdSchema } from "../common/primitives";
+import { DateTimeSchema, IdSchema } from "../common/primitives.js";
 
 export const OrganizationSchema = z.object({
     id: IdSchema,

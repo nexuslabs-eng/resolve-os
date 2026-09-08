@@ -1,14 +1,14 @@
 import { z } from "zod";
-import { DateTimeSchema, IdSchema } from "../common/primitives";
-import { IncidentSchema } from "../incidents/incident.schema";
-import { EvidenceSchema } from "../investigations/evidence.schema";
-import { HypothesisSchema } from "../investigations/hypothesis.schema";
-import { HypothesisRankingChangeSchema } from "../investigations/ranking-change.schema";
-import { InvestigationIntegritySchema } from "../investigations/investigation-integrity.schema";
-import { RecommendationSchema } from "../recommendations/recommendation.schema";
-import { ApprovalSchema } from "../recommendations/approval.schema";
-import { RemediationSchema } from "../recommendations/remediation.schema";
-import { VerificationSchema } from "../recommendations/verification.schema";
+import { DateTimeSchema, IdSchema } from "../common/primitives.js";
+import { IncidentSchema } from "../incidents/incident.schema.js";
+import { EvidenceSchema } from "../investigations/evidence.schema.js";
+import { HypothesisSchema } from "../investigations/hypothesis.schema.js";
+import { HypothesisRankingChangeSchema } from "../investigations/ranking-change.schema.js";
+import { InvestigationIntegritySchema } from "../investigations/investigation-integrity.schema.js";
+import { RecommendationSchema } from "../recommendations/recommendation.schema.js";
+import { ApprovalSchema } from "../recommendations/approval.schema.js";
+import { RemediationSchema } from "../recommendations/remediation.schema.js";
+import { VerificationSchema } from "../recommendations/verification.schema.js";
 
 const BaseEventSchema = z.object({
     id: z.string(),

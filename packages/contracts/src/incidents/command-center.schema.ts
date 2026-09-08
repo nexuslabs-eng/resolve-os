@@ -1,15 +1,15 @@
 import { z } from "zod";
-import { IncidentSchema } from "./incident.schema";
-import { InvestigationSchema } from "../investigations/investigation.schema";
-import { HypothesisSchema } from "../investigations/hypothesis.schema";
-import { EvidenceSchema } from "../investigations/evidence.schema";
-import { EvidenceHypothesisRelationSchema } from "../investigations/evidence-relation.schema";
-import { InvestigationIntegritySchema } from "../investigations/investigation-integrity.schema";
-import { CapabilityStateSchema } from "../investigations/capability-state.schema";
-import { RecommendationSchema } from "../recommendations/recommendation.schema";
-import { ApprovalPolicySchema } from "../recommendations/approval-policy.schema";
-import { RemediationSchema } from "../recommendations/remediation.schema";
-import { VerificationSchema } from "../recommendations/verification.schema";
+import { IncidentSchema } from "./incident.schema.js";
+import { InvestigationSchema } from "../investigations/investigation.schema.js";
+import { HypothesisSchema } from "../investigations/hypothesis.schema.js";
+import { EvidenceSchema } from "../investigations/evidence.schema.js";
+import { EvidenceHypothesisRelationSchema } from "../investigations/evidence-relation.schema.js";
+import { InvestigationIntegritySchema } from "../investigations/investigation-integrity.schema.js";
+import { CapabilityStateSchema } from "../investigations/capability-state.schema.js";
+import { RecommendationSchema } from "../recommendations/recommendation.schema.js";
+import { ApprovalPolicySchema } from "../recommendations/approval-policy.schema.js";
+import { RemediationSchema } from "../recommendations/remediation.schema.js";
+import { VerificationSchema } from "../recommendations/verification.schema.js";
 
 export const IncidentCommandCenterSchema = z.object({
     incident: IncidentSchema,

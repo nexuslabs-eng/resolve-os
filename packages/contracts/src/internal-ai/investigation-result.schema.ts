@@ -3,12 +3,12 @@ import {
     IntegrityLevelSchema,
     RecommendationActionTypeSchema,
     TechnicalRiskSchema
-} from "../common/enums";
-import { IdSchema } from "../common/primitives";
-import { HypothesisSchema } from "../investigations/hypothesis.schema";
-import { EvidenceSchema } from "../investigations/evidence.schema";
-import { EvidenceHypothesisRelationSchema } from "../investigations/evidence-relation.schema";
-import { InvestigationIntegritySchema } from "../investigations/investigation-integrity.schema";
+} from "../common/enums.js";
+import { IdSchema } from "../common/primitives.js";
+import { HypothesisSchema } from "../investigations/hypothesis.schema.js";
+import { EvidenceSchema } from "../investigations/evidence.schema.js";
+import { EvidenceHypothesisRelationSchema } from "../investigations/evidence-relation.schema.js";
+import { InvestigationIntegritySchema } from "../investigations/investigation-integrity.schema.js";
 
 export const AIRecommendationSchema = z.object({
     actionType: RecommendationActionTypeSchema,
