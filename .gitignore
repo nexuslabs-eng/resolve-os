@@ -51,6 +51,7 @@ venv/
 # Claude Code local/personal notes
 CLAUDE.local.md
 **/CLAUDE.local.md
+apps/backend/CLAUDE.md
 
 # Editor and OS files
 .vscode/*
