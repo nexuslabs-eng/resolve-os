@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { ApprovalDecisionSchema } from "../common/enums";
-import { DateTimeSchema, IdSchema } from "../common/primitives";
+import { ApprovalDecisionSchema } from "../common/enums.js";
+import { DateTimeSchema, IdSchema } from "../common/primitives.js";
 
 export const ApprovalSchema = z.object({
     id: IdSchema,

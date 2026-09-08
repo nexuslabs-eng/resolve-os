@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { HypothesisStatusSchema } from "../common/enums";
-import { DateTimeSchema, IdSchema } from "../common/primitives";
+import { HypothesisStatusSchema } from "../common/enums.js";
+import { DateTimeSchema, IdSchema } from "../common/primitives.js";
 
 export const HypothesisRankingChangeSchema = z.object({
     hypothesisId: IdSchema,

@@ -2,8 +2,8 @@ import { z } from "zod";
 import { 
     VerificationCheckStatusSchema,
     VerificationStatusSchema
-} from "../common/enums";
-import { DateTimeSchema, IdSchema } from "../common/primitives";
+} from "../common/enums.js";
+import { DateTimeSchema, IdSchema } from "../common/primitives.js";
 
 export const VerificationCheckSchema = z.object({
     name: z.string(),

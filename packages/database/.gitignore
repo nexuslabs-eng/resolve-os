@@ -1,0 +1,11 @@
+node_modules
+# Keep environment variables out of version control
+.env
+
+/src/generated/prisma
+
+# Local AI-assistant skill/reference docs (auto-installed tooling, not project source)
+.agents/
+.claude/
+.windsurf/
+skills-lock.json

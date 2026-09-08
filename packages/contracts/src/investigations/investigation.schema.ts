@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { IntegrityLevelSchema, InvestigationStatusSchema } from "../common/enums";
-import { DateTimeSchema, IdSchema, ScoreSchema } from "../common/primitives";
+import { IntegrityLevelSchema, InvestigationStatusSchema } from "../common/enums.js";
+import { DateTimeSchema, IdSchema, ScoreSchema } from "../common/primitives.js";
 
 export const InvestigationSchema = z.object({
     id: IdSchema,
