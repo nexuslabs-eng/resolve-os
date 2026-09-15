@@ -13,6 +13,11 @@ export const VerifyEmailOtpResponseSchema = z.object({
     nextStep: z.literal("CREATE_WORKSPACE"),
 });
 
+export const ResendVerificationOtpRequestSchema = z.object({ email: z.email() });
+export const ResendVerificationOtpResponseSchema = z.object({ accepted: z.literal(true) });
+
 export type EmailOtp = z.infer<typeof EmailOtpSchema>;
 export type VerifyEmailOtpRequest = z.infer<typeof VerifyEmailOtpRequestSchema>;
 export type VerifyEmailOtpResponse = z.infer<typeof VerifyEmailOtpResponseSchema>;
+export type ResendVerificationOtpRequest = z.infer<typeof ResendVerificationOtpRequestSchema>;
+export type ResendVerificationOtpResponse = z.infer<typeof ResendVerificationOtpResponseSchema>;
