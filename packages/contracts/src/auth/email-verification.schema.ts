@@ -13,6 +13,7 @@ export const VerifyEmailOtpResponseSchema = z.object({
     nextStep: z.literal("CREATE_WORKSPACE"),
 });
 
+
 export const ResendVerificationCodeResponseSchema = z.object({
     accepted: z.literal(true),
 });
