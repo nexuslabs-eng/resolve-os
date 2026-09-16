@@ -20,6 +20,7 @@ import {
 } from "./auth.controller.js";
 import { isAuthenticated } from "../../middleware/auth.middleware.js";
 import { googleCallBack, googleSignIn } from "./google.controller.js";
+import { githubCallBack, githubSignIn } from "./github.controller.js";
 
 const router = Router();
 
@@ -72,5 +73,9 @@ router.get("/session", getSession);
 router.get("/google", googleSignIn);
 
 router.get("/google/callback", googleCallBack);
+
+router.get("/github", githubSignIn);
+
+router.get("/github/callback", githubCallBack);
 
 export default router;

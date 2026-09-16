@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 import tryCatchWrapper from "../../infrastructure/tryCatchWrapper.js";
 import { generateCodeVerifier, generateState } from "arctic";
 import { google } from "../../infrastructure/googleOAuth.js";
