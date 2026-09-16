@@ -1,11 +1,11 @@
 import  { z } from "zod";
-import { NonEmptyStringSchema, IdSchema } from "../common/primitives.js";
+import { NonEmptyStringSchema, IdSchema, EmailSchema } from "../common/primitives.js";
 import { PasswordSchema } from "./password.schema.js";
 
 export const SignupAccountFormSchema = z
     .object({
         fullName: NonEmptyStringSchema,
-        email: z.email("Enter a valid email."),
+        email: EmailSchema,
         password: PasswordSchema,
         confirmPassword: z.string().min(1, "Confirm your password."),
     })
@@ -16,7 +16,7 @@ export const SignupAccountFormSchema = z
 
 export const SignupRequestSchema = z.object({
     fullName: NonEmptyStringSchema,
-    email: z.email(),
+    email: EmailSchema,
     password: PasswordSchema,
 });
 

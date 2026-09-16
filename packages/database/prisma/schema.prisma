@@ -6,3 +6,38 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+enum AuthProvider {
+  PASSWORD
+  GOOGLE
+  GITHUB
+}
+
+model User {
+  id                        String       @id @default(uuid())
+  fullName                  String
+  email                     String       @unique
+  passwordHash              String?
+  authProvider              AuthProvider
+  emailVerified             Boolean      @default(false)
+  verificationCode          String?
+  verificationAttempts      Int          @default(0)
+  verificationCodeExpires   DateTime?
+  passwordResetTokenHash    String?      @unique
+  passwordResetTokenExpires DateTime?
+  createdAt                 DateTime     @default(now())
+  updatedAt                 DateTime     @updatedAt
+}
+
+// Matches connect-pg-simple's expected table exactly (sid/sess/expire),
+// so express-session can use it as its store. Modeled here (rather than
+// letting connect-pg-simple create it itself) so it's tracked by Prisma's
+// own migration history instead of showing up as untracked drift later.
+model Session {
+  sid    String   @id @db.VarChar
+  sess   Json     @db.Json
+  expire DateTime @db.Timestamp(6)
+
+  @@index([expire], map: "IDX_session_expire")
+  @@map("session")
+}

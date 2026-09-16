@@ -1,9 +1,9 @@
 import { z } from "zod";
-import { NonEmptyStringSchema, IdSchema } from "../common/primitives.js";
+import { NonEmptyStringSchema, IdSchema, EmailSchema } from "../common/primitives.js";
 import { OnboardingStatusSchema, OnboardingStepSchema } from "../onboarding/onboarding.enums.js";
 
 export const LoginRequestSchema = z.object({
-    email: z.email(),
+    email: EmailSchema,
     password: z.string().min(1, "Password is required."),
 });
 

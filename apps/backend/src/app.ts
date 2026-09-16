@@ -1,8 +1,15 @@
-import express, { type Request, type Response } from 'express';
-import cors from 'cors';
-import { env } from './infrastructure/keys.js';
-import { httpLogger } from './middleware/httpLogger.middleware.js';
-import { appErrorHandler, notFoundRoutes } from './middleware/error.middleware.js';
+import express, { type Request, type Response } from "express";
+import cors from "cors";
+import { env } from "./infrastructure/keys.js";
+import { createSessionMiddleware } from "./infrastructure/session.js";
+import { httpLogger } from "./middleware/httpLogger.middleware.js";
+import {
+  appErrorHandler,
+  notFoundRoutes,
+} from "./middleware/error.middleware.js";
+import { globalLimiter } from "./middleware/rateLimit.middleware.js";
+
+import authRouter from "./modules/auth/auth.routes.js";
 
 const app = express();
 
@@ -11,9 +18,9 @@ const app = express();
 // httpLogger.middleware.ts) resolve to the actual client instead of the
 // nearest proxy. Left unset for now — safe default for local dev.
 // app.set('trust proxy', <hop count>);
-app.disable('x-powered-by');
+app.disable("x-powered-by");
 
-const cleanClientUrl = env.CLIENT_URL.replace(/\/$/, '');
+const cleanClientUrl = env.CLIENT_URL.replace(/\/$/, "");
 const allowedOrigins = [cleanClientUrl, env.CLIENT_URL];
 
 const corsOptions: cors.CorsOptions = {
@@ -21,41 +28,37 @@ const corsOptions: cors.CorsOptions = {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      callback(new Error("Not allowed by CORS"));
     }
   },
   credentials: true,
-  methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+  methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
   optionsSuccessStatus: 200,
-  allowedHeaders: [
-    'Content-Type',
-    'Idempotency-Key',
-    'Authorization',
-  ],
-  exposedHeaders: [
-    'Content-Range',
-    'X-Content-Range',
-    'x-request-id',
-  ],
+  allowedHeaders: ["Content-Type", "Idempotency-Key", "Authorization"],
+  exposedHeaders: ["Content-Range", "X-Content-Range", "x-request-id"],
 };
 
 // Order matters below.
 app.use(cors(corsOptions));
 app.use(httpLogger);
-app.use(express.json({ limit: '1mb' }));
-app.use(express.urlencoded({ extended: true, limit: '1mb' }));
+app.use(express.json({ limit: "1mb" }));
+app.use(express.urlencoded({ extended: true, limit: "1mb" }));
+app.use(createSessionMiddleware());
 
-app.get('/health', (_req: Request, res: Response) => {
+app.get("/health", (_req: Request, res: Response) => {
   res.status(200).json({
-    status: 'success',
+    status: "success",
     timestamp: new Date().toISOString(),
     environment: env.NODE_ENV,
     uptime: process.uptime(),
   });
 });
 
-// TODO: mount feature routes here as modules/<domain> is built out, e.g.
-// app.use('/incidents', incidentsRouter);
+// Placed after /health (not before) so health checks stay exempt from the
+// rate limit — same reasoning as httpLogger.middleware.ts ignoring /health.
+app.use(globalLimiter);
+
+app.use("/auth", authRouter);
 
 app.use(notFoundRoutes);
 app.use(appErrorHandler);

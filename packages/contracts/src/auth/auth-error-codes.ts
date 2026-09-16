@@ -19,6 +19,7 @@ export const AUTH_ERROR_CODES = [
     "INVITATION_EMAIL_MISMATCH",
     "INVITATION_ALREADY_EXISTS",
     "MEMBERSHIP_ALREADY_EXISTS",
+    "OAUTH_AUTHENTICATION_FAILED",
 ] as const;
 
 export type AuthErrorCode = (typeof AUTH_ERROR_CODES)[number];
