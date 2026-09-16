@@ -12,6 +12,18 @@ const EnvSchema = z.object({
   PORT: z.coerce.number().default(4000),
   LOG_LEVEL: z.string().default('info'),
   CLIENT_URL: z.url(),
+  SESSION_SECRET: z.string().min(32, 'SESSION_SECRET must be at least 32 characters.'),
+  SMTP_HOST: z.string().min(1),
+  SMTP_PORT: z.coerce.number(),
+  SMTP_USER: z.string().min(1),
+  SMTP_PASSWORD: z.string().min(1),
+  EMAIL_FROM: z.string().min(1),
+  GOOGLE_CLIENT_ID: z.string().min(1),
+  GOOGLE_CLIENT_SECRET: z.string().min(1),
+  GOOGLE_REDIRECT_URI: z.url(),
+  GITHUB_CLIENT_ID: z.string().min(1),
+  GITHUB_CLIENT_SECRET: z.string().min(1),
+  GITHUB_REDIRECT_URI: z.url(),
 });
 
 export const env = EnvSchema.parse(process.env);

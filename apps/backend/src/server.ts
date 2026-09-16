@@ -1,5 +1,3 @@
-// Must be the first import in this file. It loads dotenv into
-// process.env before anything else evaluates — including @resolve-os/database
 import { env } from './infrastructure/keys.js';
 
 import type { Server } from 'node:http';

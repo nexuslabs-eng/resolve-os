@@ -1,9 +1,10 @@
 import { z } from "zod";
 import { RoleSchema } from "../common/enums.js";
+import { EmailSchema } from "../common/primitives.js";
 import { InvitationSchema } from "./invitation.schema.js";
 
 export const CreateInvitationRequestSchema = z.object({
-    email: z.email(),
+    email: EmailSchema,
     role: RoleSchema,
 });
 

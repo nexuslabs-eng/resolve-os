@@ -1,11 +1,11 @@
 import { z } from "zod";
-import { DateTimeSchema } from "../common/primitives.js";
+import { DateTimeSchema, EmailSchema } from "../common/primitives.js";
 import { PasswordSchema } from "./password.schema.js";
 
 export const PasswordResetTokenSchema = z.string().min(32, "Invalid password reset token.");
 
 export const ForgotPasswordRequestSchema = z.object({
-    email: z.email("Enter a valid email"),
+    email: EmailSchema,
 });
 
 export const ForgotPasswordResponseSchema = z.object({
