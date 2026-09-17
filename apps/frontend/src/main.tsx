@@ -1,32 +1,48 @@
 import { StrictMode } from 'react';
-import { RouterProvider } from "react-router-dom";
 import { createRoot } from 'react-dom/client';
-import { QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-
-import { PWAUpdatePrompt } from "@/components/pwa/PWAUpdatePrompt";
-import { PWAInstallPrompt } from "@/components/pwa/PWAInstallPrompt";
-
-import { queryClient } from "@/lib/query-client";
-import { router } from "@/routes/router";
 import { useThemeStore } from "@/stores/use-theme-store";
-
 import { enableMocking } from '@/mocks/enable-mocking';
-
-import '@/index.css';
+import '@/styles/index.css';
+import { AppLoading } from '@/components/loading/AppLoading';
 
 useThemeStore.getState().initializeTheme();
 
-enableMocking().then(() => {
-  createRoot(document.getElementById('root')!).render(
-    <StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
+const container = document.getElementById("root");
 
-        {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
-        <PWAUpdatePrompt />
-        <PWAInstallPrompt />
-      </QueryClientProvider>
-    </StrictMode>,
-  );
-});
+if (!container)
+  throw new Error("ResolveOS root element was not found.")
+
+const root = createRoot(container);
+
+root.render(
+  <StrictMode>
+    <AppLoading />
+  </StrictMode>
+)
+
+const startApplication = async () => {
+  try {
+    await enableMocking();
+
+    const { default: AppRuntime } = await import("@/app/AppRuntime");
+
+    root.render(
+      <StrictMode>
+        <AppRuntime />
+      </StrictMode>
+    );
+  } catch (error) {
+    console.error(`ResolveOS startup failed: ${error}`);
+
+    root.render(
+      <StrictMode>
+        <AppLoading
+          failed
+          onRetry={() => window.location.reload()}
+        />
+      </StrictMode>
+    );
+  }
+};
+
+void startApplication();

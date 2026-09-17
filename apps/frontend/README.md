@@ -1,78 +1,52 @@
-# React + TypeScript + Vite
+# ResolveOS Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The ResolveOS frontend is a React and TypeScript PWA for the public marketing experience, authentication and onboarding, and the authenticated incident-response workspace.
 
-Currently, two official plugins are available:
+## Responsibilities
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Render the marketing site and product interface.
+- Manage client-only UI state with Zustand.
+- Manage server state with TanStack Query.
+- Validate API requests and responses with the shared `contracts` package.
+- Communicate with the backend through the shared Axios client.
+- Receive deterministic development responses through MSW.
 
-## React Compiler
+## Structure
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
-
-Note: This will impact Vite dev & build performances.
-You can also try [the experimental native React Compiler support in plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md#rust-react-compiler) by using `compiler: true` in the plugin options instead of using the Babel plugin.
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```text
+src/
+|-- app/          Application runtime, router, and route guards
+|-- components/   Shared UI, layout, loading, PWA, and theme components
+|-- features/     Feature-owned pages, components, APIs, hooks, and queries
+|-- layouts/      Marketing and authentication page composition
+|-- lib/          API client, Query client, and shared utilities
+|-- mocks/        MSW handlers, endpoint simulations, and fixtures
+|-- stores/       Client-only Zustand state
+|-- styles/       Global styles and theme variables
+`-- test/         Shared Vitest setup
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+Feature-specific code stays inside `features/`. Shared visual primitives belong in `components/`, while API and query logic remains separate from page components.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Authentication
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Authentication uses an `HttpOnly` cookie session. The frontend never reads or stores the session token directly; it requests `/auth/session` and uses route loaders to direct anonymous, onboarding, and authenticated users.
 
+MSW currently implements the authentication and onboarding endpoints during development. When the backend is ready, MSW can be disabled without changing the feature API functions. Google and GitHub authentication remain disabled until backend OAuth endpoints are available.
+
+## Development
+
+Run commands from the repository root:
+
+```bash
+pnpm --filter @resolve-os/frontend dev
+pnpm --filter @resolve-os/frontend test
+pnpm --filter @resolve-os/frontend lint
+pnpm --filter @resolve-os/frontend build
 ```
+
+Set `VITE_API_URL` to override the default API origin of `http://localhost:3000`.
+
+## Current Scope
+
+The frontend currently includes the marketing page, login, signup and onboarding, email verification, workspace setup, profile setup, password recovery, session-aware routing, global loading and error states, PWA prompts, and a temporary Command Center data-flow screen.

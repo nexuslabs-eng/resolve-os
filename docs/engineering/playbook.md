@@ -55,7 +55,7 @@ TypeScript
 Vite
 React Router
 Tailwind CSS
-shadcn/ui + Radix UI
+shadcn/ui + Base UI
 Zustand
 TanStack Query
 Axios

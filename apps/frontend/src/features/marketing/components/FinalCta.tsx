@@ -1,7 +1,10 @@
 import { ArrowRight, BookText } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 export const FinalCta = () => {
+  const navigate = useNavigate();
+
   return (
     <section className="relative overflow-hidden border-t border-border">
       <div
@@ -17,7 +20,12 @@ export const FinalCta = () => {
           story.
         </p>
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <Button variant="brand" size="lg" className="w-full gap-2 sm:w-auto">
+          <Button
+            variant="brand"
+            size="lg"
+            className="w-full gap-2 sm:w-auto"
+            onClick={() => navigate("/signup/account")}
+          >
             Request Access
             <ArrowRight className="h-4 w-4" />
           </Button>

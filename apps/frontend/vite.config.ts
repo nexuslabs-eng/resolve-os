@@ -11,6 +11,26 @@ export default defineConfig({
     tailwindcss(),
     babel({ presets: [reactCompilerPreset()] }),
 
+    {
+      name: "javascript-chunk-budget",
+      apply: "build",
+      enforce: "post",
+      generateBundle(_, bundle) {
+        for (const output of Object.values(bundle)) {
+          if (output.type !== "chunk") continue;
+
+          const sizeKB = Buffer.byteLength(output.code, "utf8") / 1000;
+
+          if (sizeKB >= 1000) {
+            this.error(
+              `${output.fileName} is ${sizeKB.toFixed(1)} kB; ` +
+              "JavaScript chunks must stay below 1000 kB.",
+            );
+          }
+        }
+      },
+    },
+
     VitePWA({
       registerType: "prompt",
 
@@ -74,5 +94,8 @@ export default defineConfig({
     alias: {
       "@": path.resolve(import.meta.dirname, "src"),
     },
+  },
+  build: {
+    chunkSizeWarningLimit: 1000,
   }
 })

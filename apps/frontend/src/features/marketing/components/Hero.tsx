@@ -31,7 +31,7 @@ const Hero = () => {
           </p>
 
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Button variant="brand" size="lg" className="w-full gap-2 sm:w-auto">
+            <Button variant="brand" size="lg" className="w-full gap-2 sm:w-auto" onClick={() => navigate("signup/account")}>
               Request Access
               <ArrowRight className="h-4 w-4" />
             </Button>
@@ -39,7 +39,7 @@ const Hero = () => {
               variant="ghost" 
               size="lg"  
               className="w-full sm:w-auto justify-center gap-2 items-center"
-              onClick={() => navigate("data-flow-test/11111111-1111-4111-8111-111111111111")}
+              onClick={() => navigate("/#how-it-works")}
             >
               <BookText className="h-4 w-4" />
               See how it works

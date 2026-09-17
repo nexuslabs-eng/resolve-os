@@ -1,13 +1,7 @@
 import { ResolutionNode } from "@/components/brand/ResolutionNode";
+import { GROUPS } from "@/features/marketing/fixtures/footer-links";
 
-const GROUPS = [
-  { title: "Product", links: ["Product", "How it works", "Why ResolveOS", "Security"] },
-  { title: "Resources", links: ["Documentation", "Architecture", "Guides"] },
-  { title: "Company", links: ["About", "Contact", "GitHub"] },
-  { title: "Legal", links: ["Privacy", "Terms"] },
-];
-
-const Footer = () => {
+const MarketingFooter = () => {
   return (
     <footer className="border-t border-border bg-surface-inset/50">
       <div className="mx-auto w-full max-w-310 px-5 py-14 sm:px-8">
@@ -32,12 +26,13 @@ const Footer = () => {
                 </h3>
                 <ul className="mt-3 space-y-2">
                   {group.links.map((link) => (
-                    <li key={link}>
+                    <li key={link.name}>
                       <a
-                        href="#top"
+                        href={link.url}
+                        target={link.target_blank ? "_blank" : undefined}
                         className="text-[13px] text-muted-foreground transition-colors hover:text-foreground"
                       >
-                        {link}
+                        {link.name}
                       </a>
                     </li>
                   ))}
@@ -55,4 +50,4 @@ const Footer = () => {
   );
 }
 
-export default Footer;
+export default MarketingFooter;

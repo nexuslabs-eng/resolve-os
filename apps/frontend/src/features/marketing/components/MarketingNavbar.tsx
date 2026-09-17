@@ -5,6 +5,7 @@ import { ResolutionNode } from "@/components/brand/ResolutionNode";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
 
 const NAV_LINKS = [
   { label: "Product", href: "#product" },
@@ -13,11 +14,13 @@ const NAV_LINKS = [
   { label: "Security", href: "#security" },
 ];
 
-const Navbar = () => {
+const MarketingNavbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const mobileNavOpen = useUiStore((s) => s.mobileNavOpen);
   const toggleMobileNav = useUiStore((s) => s.toggleMobileNav);
   const setMobileNavOpen = useUiStore((s) => s.setMobileNavOpen);
+
+  const navigate = useNavigate();
 
 
   useEffect(() => {
@@ -63,10 +66,11 @@ const Navbar = () => {
                 variant="ghost"
                 size="sm"
                 className="text-muted-foreground hover:text-foreground"
+                onClick={() => navigate("/login")}
               >
                 Sign in
               </Button>
-              <Button size="sm" variant="default">
+              <Button size="sm" variant="default" onClick={() => navigate("/signup/account")}>
                 Request Access
               </Button>
             </div>
@@ -103,10 +107,16 @@ const Navbar = () => {
                   </a>
                 ))}
                 <div className="mt-3 flex flex-col gap-2 border-t border-border pt-3">
-                  <Button variant="ghost" size="sm">
+                  <Button variant="ghost" size="sm" onClick={() => {
+                    setMobileNavOpen(false);
+                    navigate("/login");
+                  }}>
                     Sign in
                   </Button>
-                  <Button variant="brand" size="sm">
+                  <Button variant="brand" size="sm" onClick={() => {
+                    setMobileNavOpen(false);
+                    navigate("/signup/account");
+                  }}>
                     Request Access
                   </Button>
                 </div>
@@ -119,4 +129,4 @@ const Navbar = () => {
   );
 }
 
-export default Navbar;
+export default MarketingNavbar;
