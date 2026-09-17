@@ -1,0 +1,25 @@
+import { QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { RouterProvider } from "react-router-dom";
+import { router } from "@/app/router/router";
+import { PWAInstallPrompt } from "@/components/pwa/PWAInstallPrompt";
+import { PWAUpdatePrompt } from "@/components/pwa/PWAUpdatePrompt";
+import { queryClient } from "@/lib/query-client";
+import { AuthSessionBoundary } from "@/features/auth/components/SessionBoundary";
+
+const AppRuntime = () => (
+    <QueryClientProvider client={queryClient}>
+        <AuthSessionBoundary>
+            <RouterProvider router={router} />
+        </AuthSessionBoundary>
+
+        {import.meta.env.DEV && (
+            <ReactQueryDevtools initialIsOpen={false} />
+        )}
+
+        <PWAUpdatePrompt />
+        <PWAInstallPrompt />
+    </QueryClientProvider>
+);
+
+export default AppRuntime;

@@ -1,49 +1,42 @@
-import axios, { AxiosError, type InternalAxiosRequestConfig } from "axios";
+import { ApiErrorSchema } from "contracts";
+import axios, { AxiosError } from "axios";
+
+import { ApiClientError } from "@/lib/api/api-client-error";
+import { API_BASE_URL } from "@/lib/api/api-config";
 
 export const axiosClient = axios.create({
-    baseURL: import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:3000',
-    timeout: 10000,
+    baseURL: API_BASE_URL,
+    timeout: 10_000,
+    withCredentials: true,
     headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
     },
 });
 
-axiosClient.interceptors.request.use(
-    (config: InternalAxiosRequestConfig) => {
-        const token = localStorage.getItem('auth_token');
-
-        if (token && config.headers) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-
-        return config;
-    },
-    (err) => Promise.reject(err)
-);
-
 axiosClient.interceptors.response.use(
-    (response) => {
-        return response.data;
+    (response) => response.data,
+    (error: AxiosError) => {
+        const result = ApiErrorSchema.safeParse(
+            error.response?.data,
+        );
+
+        const payload = result.success
+            ? result.data.error
+            : undefined;
+
+        return Promise.reject(
+            new ApiClientError(
+                payload?.message ??
+                    error.message ??
+                    "An unexpected error occurred.",
+                {
+                    code: payload?.code,
+                    status: error.response?.status ?? null,
+                    details: payload?.details,
+                    requestId: payload?.requestId,
+                    data: error.response?.data,
+                },
+            ),
+        );
     },
-    (err: AxiosError) => {
-        const responseData = err.response?.data as 
-        | {
-            error?: {
-                code?: string;
-                message?: string;
-            };
-        }
-        | undefined;
-
-        return Promise.reject(({
-            message: 
-            responseData?.error?.message ??
-            err.message ??
-            'An unexpected error occurred',
-
-            code: responseData?.error?.code,
-            status: err.response?.status ?? 500,
-            data: err.response?.data ?? null,
-        }));
-    } ,
 );
