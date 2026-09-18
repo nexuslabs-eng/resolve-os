@@ -1,4 +1,4 @@
-name: Frontend Linting
+name: Linting
 
 on:
     push:
@@ -34,3 +34,6 @@ jobs:
 
           - name: Lint frontend
             run: pnpm --filter frontend lint
+
+          - name: Lint backend
+            run: pnpm --filter @resolve-os/backend lint

@@ -51,7 +51,7 @@ const startServer = async (): Promise<void> => {
         process.exit(1);
       }, 10_000);
 
-      server?.close(async (closeErr) => {
+      server?.close((closeErr) => {
         clearTimeout(forceExitTimer);
 
         if (closeErr) {
@@ -60,8 +60,9 @@ const startServer = async (): Promise<void> => {
           logger.info('HTTP server closed');
         }
 
-        await gracefulShutdown();
-        process.exit(closeErr ? 1 : 0);
+        gracefulShutdown()
+          .catch((error: unknown) => logError(error, 'Error during graceful shutdown'))
+          .finally(() => process.exit(closeErr ? 1 : 0));
       });
     };
 
@@ -73,4 +74,4 @@ const startServer = async (): Promise<void> => {
   }
 };
 
-startServer();
+void startServer();

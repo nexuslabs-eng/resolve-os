@@ -9,6 +9,7 @@ import { sendError } from '../infrastructure/responseHandler.js';
 // lives here instead; controllers read from req.validatedQuery, not
 // req.query, once this middleware has run.
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace -- Express's own type augmentation requires namespace syntax; no ES-module equivalent exists.
   namespace Express {
     interface Request {
       validatedQuery?: Record<string, unknown>;
