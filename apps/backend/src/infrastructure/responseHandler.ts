@@ -21,7 +21,8 @@ export const sendError = (
   message: string,
   details?: Record<string, unknown>,
 ): void => {
-  const requestId = String(res.req.id);
+  
+  const requestId = res.req.id as string;
 
   logger.error({ code, message, requestId }, 'Error response sent');
 

@@ -24,7 +24,7 @@ export const logger: Logger = pino({
 
 // helper for logging errors from side effects such as tryCatchWrapper
 export const logError = (
-  error: Error | unknown,
+  error: unknown,
   context?: string,
   metadata?: Record<string, unknown>,
 ): void => {

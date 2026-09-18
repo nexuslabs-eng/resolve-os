@@ -17,7 +17,7 @@ export const httpLogger = pinoHttp<Request, Response>({
   // Skip health-check noise in production; keep full logging in dev.
   autoLogging: isProduction ? { ignore: (req) => req.url === '/health' } : true,
   serializers: {
-    req: (req) => ({
+    req: (req: Request) => ({
       id: req.id,
       method: req.method,
       url: req.url,
@@ -40,7 +40,7 @@ export const httpLogger = pinoHttp<Request, Response>({
       forwardedFor: req.headers['x-forwarded-for'],
       ips: req.ips,
     }),
-    res: (res) => ({
+    res: (res: Response) => ({
       statusCode: res.statusCode,
     }),
   },
