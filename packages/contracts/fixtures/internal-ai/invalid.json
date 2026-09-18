@@ -1,0 +1,67 @@
+[
+    {
+        "model": "request",
+        "path": ["incident", "description"],
+        "remove": true
+    },
+    {
+        "model": "request",
+        "path": ["investigationId"],
+        "value": "not-a-uuid"
+    },
+    {
+        "model": "request",
+        "path": ["capabilityStates", 0, "freshness"],
+        "value": true
+    },
+    {
+        "model": "request",
+        "path": ["capabilityStates", 0, "freshness"],
+        "value": "50"
+    },
+    {
+        "model": "request",
+        "path": ["capabilityStates", 0, "updatedAt"],
+        "value": "2026-09-17T12:00:00+00:00"
+    },
+    {
+        "model": "request",
+        "path": ["capabilityStates", 0, "updatedAt"],
+        "value": "2026-02-30T12:00:00Z"
+    },
+    {
+        "model": "result",
+        "path": ["hypotheses", 0, "evidenceQuality"],
+        "value": "MEDIUM"
+    },
+    {
+        "model": "result",
+        "path": ["hypotheses", 0, "rank"],
+        "value": 0
+    },
+    {
+        "model": "result",
+        "path": ["hypotheses", 0, "rank"],
+        "value": 1.5
+    },
+    {
+        "model": "result",
+        "path": ["integrity", "evidenceCoverage"],
+        "value": 101
+    },
+    {
+        "model": "result",
+        "path": ["integrity", "degradationLevel"],
+        "value": 6
+    },
+    {
+        "model": "result",
+        "path": ["evidence", 0, "provenance", "capturedAt"],
+        "remove": true
+    },
+    {
+        "model": "result",
+        "path": ["leadingHypothesisId"],
+        "remove": true
+    }
+]
