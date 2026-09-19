@@ -2,6 +2,14 @@
   "name": "resolve-os",
   "private": true,
   "version": "1.0.0",
+  "scripts": {
+    "ai:dev": "uv run --locked --directory apps/ai uvicorn app.main:create_app --factory --reload --host 127.0.0.1 --port 8000",
+    "ai:test": "uv run --locked --directory apps/ai pytest",
+    "ai:lint": "uv run --locked --directory apps/ai ruff check .",
+    "ai:format": "uv run --locked --directory apps/ai ruff format .",
+    "ai:format:check": "uv run --locked --directory apps/ai ruff format --check .",
+    "ai:smoke": "uv run --locked --directory apps/ai pytest tests/smoke/test_gemini_provider.py --run-external -s"
+  },
   "devEngines": {
     "packageManager": {
       "name": "pnpm",

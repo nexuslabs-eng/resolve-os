@@ -39,10 +39,10 @@ MSW currently implements the authentication and onboarding endpoints during deve
 Run commands from the repository root:
 
 ```bash
-pnpm --filter @resolve-os/frontend dev
-pnpm --filter @resolve-os/frontend test
-pnpm --filter @resolve-os/frontend lint
-pnpm --filter @resolve-os/frontend build
+pnpm --filter frontend dev
+pnpm --filter frontend test
+pnpm --filter frontend lint
+pnpm --filter frontend build
 ```
 
 Set `VITE_API_URL` to override the default API origin of `http://localhost:3000`.

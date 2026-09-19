@@ -1,9 +1,9 @@
 # ResolveOS
 
 ResolveOS is an evidence-aware incident investigation and response
-platform for engineering teams. It is built for complex failures where
+platform for engineering teams. It is designed for complex failures where
 signals conflict, evidence quality varies, and critical diagnostic
-capabilities may degrade during an incident.
+capabilities may become unavailable.
 
 Instead of treating AI confidence as the final answer, ResolveOS
 maintains competing hypotheses, evaluates supporting and contradictory
@@ -12,7 +12,7 @@ authorization before consequential remediation.
 
 > **AI recommends. Humans authorize. ResolveOS enforces.**
 
-## Core Workflow
+## Product Direction
 
 ``` text
 Incident
@@ -68,7 +68,7 @@ React + TypeScript PWA
      REST / SSE
         │
         ▼
-Node.js + Express API
+Node.js + Express API 
         │
         ├── PostgreSQL + Prisma ORM
         │
@@ -105,33 +105,84 @@ approval before recovery is verified.
 
 ## Repository
 
-``` text
+```text
 resolve-os/
-├── apps/
-│   ├── frontend/
-│   ├── backend/
-│   └── ai/
-├── docs/
-└── packages/
-    └── contracts/
+|-- apps/
+|   |-- frontend/     React and TypeScript PWA
+|   |-- backend/      Express domain API
+|   `-- ai/           Python AI service
+|-- packages/
+|   |-- contracts/    Shared TypeScript and Zod schemas
+|   `-- database/     Shared Prisma database package
+|-- docs/            Product and engineering documentation
+`-- .github/         CI workflows
 ```
+
+## Development
+
+Use Node.js 24 and the pnpm version declared in the root `package.json`.
+The AI service additionally requires uv and Python 3.13.
+
+Install JavaScript workspace dependencies from the repository root:
+
+```powershell
+pnpm install --frozen-lockfile
+```
+
+Follow each domain README for environment configuration and initial setup.
+After setup, start the required domains in separate terminals:
+
+```powershell
+pnpm --filter frontend dev
+pnpm --filter @resolve-os/backend dev
+pnpm ai:dev
+```
+
+Frontend development can use MSW without a running backend. AI scaffold
+tests run independently of the backend and database.
+
+## Verification
+
+Common commands, run from the repository root:
+
+```powershell
+pnpm --filter frontend test
+pnpm --filter frontend lint
+pnpm --filter frontend build
+pnpm --filter @resolve-os/backend build
+
+pnpm ai:test
+pnpm ai:lint
+pnpm ai:format:check
+```
+
+The backend `build` command currently performs TypeScript checking.
+
+For AI lint fixes and formatting:
+
+```powershell
+pnpm ai:lint --fix
+pnpm ai:format
+```
+
+`pnpm ai:smoke` explicitly runs a real Gemini request and requires local
+provider credentials. It is excluded from ordinary CI.
+
+See the [AI README](apps/ai/README.md#shared-contracts) for the cross-runtime
+Zod/Pydantic compatibility checks.
 
 ## Documentation
 
-Project documentation lives in [`/docs`](./docs).
-
--   [`docs/product/prd.md`](./docs/product/prd.md) contains the product
-    requirements and MVP behavior.
--   [`docs/engineering/playbook.md`](./docs/engineering/playbook.md)
-    defines the architecture, domain boundaries, development workflow,
-    data model, AI investigation flow, and testing strategy.
+- [Frontend setup and scope](apps/frontend/README.md)
+- [Backend setup and responsibilities](apps/backend/README.md)
+- [AI setup, configuration, and testing](apps/ai/README.md)
+- [Product requirements](docs/product/prd.md)
+- [Engineering playbook](docs/engineering/playbook.md)
 
 ## Team
 
--   **[Samuel](https://github.com/socode-dev)**: Frontend and AI
-    Engineering
--   **[Adejare](https://github.com/jar-andreas)**: Backend and Platform
-    Engineering
+- [Samuel](https://github.com/socode-dev): Frontend and AI Engineering
+- [Adejare](https://github.com/jar-andreas): Backend and Platform Engineering
 
 ## Status
 

@@ -1,0 +1,104 @@
+{
+    "request": {
+        "investigationId": "11111111-1111-4111-8111-111111111111",
+        "incident": {
+            "id": "22222222-2222-4222-8222-222222222222",
+            "title": "Contract fixture",
+            "description": null,
+            "severity": "HIGH"
+        },
+        "service": {
+            "id": "33333333-3333-4333-8333-333333333333",
+            "name": "payments",
+            "environment": "test",
+            "currentVersion": null
+        },
+        "capabilityStates": [
+            {
+                "capability": "METRICS",
+                "status": "AVAILABLE",
+                "freshness": 99.5,
+                "reason": null,
+                "updatedAt": "2026-09-17T12:00:00.123456789Z"
+            }
+        ]
+    },
+    "result": {
+        "investigationId": "11111111-1111-4111-8111-111111111111",
+        "status": "DEGRADED",
+        "hypotheses": [
+            {
+                "id": "44444444-4444-4444-8444-444444444444",
+                "reference": "H1",
+                "investigationId": "11111111-1111-4111-8111-111111111111",
+                "statement": "Synthetic hypothesis for contract testing",
+                "status": "CANDIDATE",
+                "supportStrength": 50.5,
+                "contradictionPressure": 20,
+                "evidenceQuality": "MODERATE",
+                "independentEvidenceGroups": 1,
+                "unresolvedContradictions": 1,
+                "rank": 1,
+                "createdAt": "2026-09-17T12:00Z",
+                "updatedAt": "2026-09-17T12:01:00Z"
+            }
+        ],
+        "evidence": [
+            {
+                "id": "55555555-5555-4555-8555-555555555555",
+                "reference": "EV-1",
+                "investigationId": "11111111-1111-4111-8111-111111111111",
+                "source": "fixture",
+                "sourceType": "METRIC",
+                "observation": "Synthetic observation",
+                "reliability": 100,
+                "specificity": 0,
+                "directness": 50,
+                "freshness": 99.5,
+                "temporalRelevance": 75,
+                "independenceGroup": "fixture-group",
+                "provenance": {
+                    "tool": null,
+                    "reference": null,
+                    "capturedAt": "2026-09-17T12:00:00Z"
+                },
+                "createdAt": "2026-09-17T12:00:00Z"
+            }
+        ],
+        "relations": [
+            {
+                "id": "66666666-6666-4666-8666-666666666666",
+                "evidenceId": "55555555-5555-4555-8555-555555555555",
+                "hypothesisId": "44444444-4444-4444-8444-444444444444",
+                "relation": "CONTRADICTS",
+                "contradictionSeverity": "MODERATE",
+                "weight": 20,
+                "reasoning": "Synthetic relation"
+            }
+        ],
+        "integrity": {
+            "level": "DEGRADED",
+            "evidenceCoverage": 50,
+            "availableSources": 1,
+            "degradedSources": 1,
+            "unavailableSources": 0,
+            "independentEvidenceGroups": 1,
+            "unresolvedContradictions": 1,
+            "degradationLevel": 1,
+            "reasons": ["Synthetic fixture"]
+        },
+        "leadingHypothesisId": null,
+        "recommendation": {
+            "actionType": "NO_ACTION",
+            "summary": "Contract fixture only",
+            "reasoning": "No real investigation",
+            "technicalRisk": "LOW",
+            "supportingEvidenceIds": [],
+            "contradictingEvidenceIds": [
+                "55555555-5555-4555-8555-555555555555"
+            ],
+            "investigationIntegrity": "DEGRADED"
+        },
+        "error": null
+    }
+}
