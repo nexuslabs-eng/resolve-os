@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-    lint:
+    test:
         name: Vitest
         runs-on: ubuntu-latest
         timeout-minutes: 10
@@ -24,7 +24,7 @@ jobs:
 
           - name: Setup Node.js
             uses: actions/setup-node@v6
-            with: 
+            with:
                 node-version: 24
                 cache: 'pnpm'
                 cache-dependency-path: pnpm-lock.yaml
@@ -34,3 +34,6 @@ jobs:
 
           - name: Test frontend
             run: pnpm --filter frontend test
+
+          - name: Test backend
+            run: pnpm --filter @resolve-os/backend test

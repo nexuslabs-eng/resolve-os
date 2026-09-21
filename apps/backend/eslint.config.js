@@ -11,7 +11,12 @@ export default defineConfig([
     languageOptions: {
       globals: globals.node,
       parserOptions: {
-        projectService: true,
+        // vitest.config.ts lives outside src/ (tsconfig.json's rootDir),
+        // so it isn't covered by any tsconfig project — lint it standalone
+        // instead of erroring.
+        projectService: {
+          allowDefaultProject: ["vitest.config.ts"],
+        },
         tsconfigRootDir: import.meta.dirname,
       },
     },
@@ -20,6 +25,19 @@ export default defineConfig([
       // Route handlers are wrapped in tryCatchWrapper, which requires an
       // async signature uniformly, even for handlers that never await.
       "@typescript-eslint/require-await": "off",
+    },
+  },
+  {
+    files: ["**/__tests__/**/*.ts"],
+    rules: {
+      // expect(mock.method).not.toHaveBeenCalled() passes a mock function
+      // around detached from its object — the exact "this" concern this
+      // rule exists to catch elsewhere, but mock functions don't use `this`.
+      "@typescript-eslint/unbound-method": "off",
+      // expect.objectContaining(...) is deliberately typed as `any` so it
+      // can match a partial shape against anything — not an actual unsafe
+      // value flowing through the test.
+      "@typescript-eslint/no-unsafe-assignment": "off",
     },
   },
 ]);
