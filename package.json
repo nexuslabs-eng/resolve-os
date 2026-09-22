@@ -8,7 +8,8 @@
     "ai:lint": "uv run --locked --directory apps/ai ruff check .",
     "ai:format": "uv run --locked --directory apps/ai ruff format .",
     "ai:format:check": "uv run --locked --directory apps/ai ruff format --check .",
-    "ai:smoke": "uv run --locked --directory apps/ai pytest tests/smoke/test_gemini_provider.py --run-external -s"
+    "ai:smoke": "uv run --locked --directory apps/ai pytest tests/smoke/test_gemini_provider.py --run-external -s",
+    "generate:manifest": "node packages/simulation-data/scripts/generate-manifest.mjs"
   },
   "devEngines": {
     "packageManager": {

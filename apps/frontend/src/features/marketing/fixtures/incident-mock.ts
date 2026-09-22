@@ -3,7 +3,6 @@ import type {
   CapabilityState,
   Evidence,
   EvidenceHypothesisRelation,
-  EvidenceQuality,
   Hypothesis,
   HypothesisRankingChange,
   Incident,
@@ -13,6 +12,8 @@ import type {
   Service,
   Verification,
 } from "contracts";
+
+type EvidenceQuality = "LOW" | "MODERATE" | "HIGH";
 
 const IDS = {
   organization: "00000000-0000-4000-8000-000000000001",
@@ -75,7 +76,6 @@ export const INVESTIGATION = {
   status: "DEGRADED",
   integrity: "DEGRADED",
   evidenceCoverage: 72,
-  degradationLevel: 1,
   leadingHypothesisId: IDS.h2,
   startedAt: "2026-08-21T13:59:00.000Z",
   completedAt: null,
@@ -90,7 +90,6 @@ export const HYPOTHESES = [
     status: "WEAKENED",
     supportStrength: 42,
     contradictionPressure: 86,
-    evidenceQuality: "HIGH",
     independentEvidenceGroups: 2,
     unresolvedContradictions: 1,
     rank: 2,
@@ -105,7 +104,6 @@ export const HYPOTHESES = [
     status: "LEADING",
     supportStrength: 91,
     contradictionPressure: 8,
-    evidenceQuality: "HIGH",
     independentEvidenceGroups: 2,
     unresolvedContradictions: 0,
     rank: 1,
@@ -120,7 +118,6 @@ export const HYPOTHESES = [
     status: "WEAKENED",
     supportStrength: 18,
     contradictionPressure: 78,
-    evidenceQuality: "HIGH",
     independentEvidenceGroups: 1,
     unresolvedContradictions: 1,
     rank: 3,
@@ -144,7 +141,7 @@ export const EVIDENCE = [
     temporalRelevance: 92,
     independenceGroup: "checkout-deployment-v2.8.4",
     provenance: {
-      tool: "getRecentDeployments",
+      capability: "DEPLOYMENTS",
       reference: "commit 4b19ac2",
       capturedAt: "2026-08-21T14:01:00.000Z",
     },
@@ -164,7 +161,7 @@ export const EVIDENCE = [
     temporalRelevance: 96,
     independenceGroup: "controlled-version-comparison",
     provenance: {
-      tool: "getRecentDeployments",
+      capability: "DEPLOYMENTS",
       reference: "controlled rollback test",
       capturedAt: "2026-08-21T14:04:00.000Z",
     },
@@ -184,7 +181,7 @@ export const EVIDENCE = [
     temporalRelevance: 98,
     independenceGroup: "provider-latency",
     provenance: {
-      tool: "getMetrics",
+      capability: "METRICS",
       reference: "all checkout regions",
       capturedAt: "2026-08-21T14:06:00.000Z",
     },
@@ -195,7 +192,7 @@ export const EVIDENCE = [
     reference: "EV-33",
     investigationId: IDS.investigation,
     source: "service-health",
-    sourceType: "SERVICE_HEALTH",
+    sourceType: "RUNTIME_STATE",
     observation: "Database pool health remains normal",
     reliability: 93,
     specificity: 90,
@@ -204,7 +201,7 @@ export const EVIDENCE = [
     temporalRelevance: 94,
     independenceGroup: "database-pool-health",
     provenance: {
-      tool: "getServiceHealth",
+      capability: "RUNTIME_STATE",
       reference: "checkout database pool",
       capturedAt: "2026-08-21T14:06:30.000Z",
     },
@@ -218,7 +215,6 @@ export const EVIDENCE_RELATIONS = [
     evidenceId: IDS.ev18,
     hypothesisId: IDS.h1,
     relation: "SUPPORTS",
-    contradictionSeverity: null,
     weight: 58,
     reasoning: "The deployment timing correlates with impact but does not establish causation.",
   },
@@ -236,7 +232,6 @@ export const EVIDENCE_RELATIONS = [
     evidenceId: IDS.ev31,
     hypothesisId: IDS.h2,
     relation: "SUPPORTS",
-    contradictionSeverity: null,
     weight: 92,
     reasoning: "Provider latency increased across all checkout regions during the incident window.",
   },
@@ -285,7 +280,7 @@ export const RANKING_CHANGES = [
 ] satisfies HypothesisRankingChange[];
 
 export const CAPABILITIES = [
-  { capability: "SERVICE_HEALTH", status: "AVAILABLE", freshness: 98, reason: null, updatedAt: SCENARIO_NOW },
+  { capability: "RUNTIME_STATE", status: "AVAILABLE", freshness: 98, reason: null, updatedAt: SCENARIO_NOW },
   { capability: "DEPLOYMENTS", status: "AVAILABLE", freshness: 96, reason: null, updatedAt: SCENARIO_NOW },
   { capability: "LOG_SEARCH", status: "FAILED", freshness: null, reason: "Provider timeout", updatedAt: SCENARIO_NOW },
   { capability: "METRICS", status: "AVAILABLE", freshness: 98, reason: null, updatedAt: SCENARIO_NOW },
@@ -298,18 +293,18 @@ export const CAPABILITIES = [
 export const INVESTIGATION_INTEGRITY = {
   level: "DEGRADED",
   evidenceCoverage: 72,
-  availableSources: 6,
-  degradedSources: 1,
-  unavailableSources: 1,
+  availableCapabilities: 6,
+  degradedCapabilities: 1,
+  unavailableCapabilities: 1,
   independentEvidenceGroups: 4,
   unresolvedContradictions: 1,
-  degradationLevel: 1,
   reasons: ["Log Search failed. Conclusions are limited to available independent signals."],
 } satisfies InvestigationIntegrity;
 
 export const RECOMMENDATION = {
   id: IDS.recommendation,
   investigationId: IDS.investigation,
+  hypothesisId: IDS.h2,
   actionType: "TRAFFIC_SHIFT",
   summary: "Shift payment traffic to the secondary provider",
   reasoning: "Provider degradation is the leading explanation and the secondary provider remains healthy.",
@@ -318,15 +313,16 @@ export const RECOMMENDATION = {
   supportingEvidenceIds: [IDS.ev31],
   contradictingEvidenceIds: [],
   investigationIntegrity: "DEGRADED",
+  evidenceCoverage: 72,
+  contradictionPressure: 8,
   createdAt: "2026-08-21T14:07:00.000Z",
 } satisfies Recommendation;
 
 export const APPROVAL_POLICY = {
   recommendationId: IDS.recommendation,
-  requiredApprovals: 1,
-  requiredRoles: ["INCIDENT_COMMANDER"],
+  requirements: [{ role: "INCIDENT_COMMANDER", count: 1 }],
   policyReasons: ["Traffic shifting affects a production service while investigation integrity is degraded."],
-  currentApprovals: 0,
+  currentApprovedCount: 0,
   satisfied: false,
 } satisfies ApprovalPolicy;
 
@@ -374,8 +370,12 @@ const evidenceDetails: Record<string, string> = {
 const sourceLabels: Record<Evidence["sourceType"], string> = {
   METRIC: "provider metrics",
   LOG: "logs",
+  TRACE: "traces",
   DEPLOYMENT: "deployments",
-  SERVICE_HEALTH: "service health",
+  CHANGE: "change history",
+  RUNTIME_STATE: "runtime state",
+  ALERT: "alerts",
+  TOPOLOGY: "service topology",
   INCIDENT_HISTORY: "incident history",
   RUNBOOK: "runbook",
   HUMAN_OBSERVATION: "human observation",
@@ -389,10 +389,14 @@ const evidenceSourceLabels: Record<string, string> = {
 };
 
 const capabilityLabels: Record<CapabilityState["capability"], string> = {
-  SERVICE_HEALTH: "Service Health",
-  DEPLOYMENTS: "Deployments",
-  LOG_SEARCH: "Log Search",
+  SERVICE_TOPOLOGY: "Service Topology",
   METRICS: "Metrics",
+  LOG_SEARCH: "Log Search",
+  TRACE_SEARCH: "Trace Search",
+  DEPLOYMENTS: "Deployments",
+  CHANGE_HISTORY: "Change History",
+  RUNTIME_STATE: "Runtime State",
+  ALERTS: "Alerts",
   INCIDENT_HISTORY: "Incident History",
   RUNBOOKS: "Runbooks",
   AI_REASONING: "AI Reasoning",
@@ -431,12 +435,15 @@ export const getHypothesisById = (hypothesisId: string) =>
   HYPOTHESES.find((hypothesis) => hypothesis.id === hypothesisId);
 
 export const getApprovalSummary = (policy: ApprovalPolicy) => {
-  const role = policy.requiredRoles[0]
+  const requirement = policy.requirements[0];
+  const role = requirement?.role
     ?.split("_")
     .map((word) => word.charAt(0) + word.slice(1).toLowerCase())
     .join(" ");
-  if (!policy.requiredApprovals || !role) return "No approval required";
-  return `${role} approval required`;
+  if (!requirement || !role) return "No approval required";
+  return requirement.count === 1
+    ? `${role} approval required`
+    : `${requirement.count} ${role} approvals required`;
 };
 
 export const getIncidentOpenedLabel = (startedAt: string, now = SCENARIO_NOW) => {

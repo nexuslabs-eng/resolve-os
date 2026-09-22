@@ -22,9 +22,8 @@ const fixture = {
     id: "55555555-5555-4555-8555-555555555555",
     incidentId: "11111111-1111-4111-8111-111111111111",
     status: "DEGRADED",
-    integrity: "HIGH",
+    integrity: "DEGRADED",
     evidenceCoverage: 72,
-    degradationLevel: 1,
     leadingHypothesisId: "77777777-7777-4777-8777-777777777777",
     startedAt: "2026-08-29T18:08:00.000Z",
     completedAt: null,
@@ -38,7 +37,6 @@ const fixture = {
       status: "WEAKENED",
       supportStrength: 42,
       contradictionPressure: 86,
-      evidenceQuality: "MODERATE",
       independentEvidenceGroups: 2,
       unresolvedContradictions: 1,
       rank: 2,
@@ -53,7 +51,6 @@ const fixture = {
       status: "LEADING",
       supportStrength: 84,
       contradictionPressure: 14,
-      evidenceQuality: "HIGH",
       independentEvidenceGroups: 3,
       unresolvedContradictions: 0,
       rank: 1,
@@ -68,7 +65,6 @@ const fixture = {
       status: "LEADING",
       supportStrength: 70,
       contradictionPressure: 35,
-      evidenceQuality: "LOW",
       independentEvidenceGroups: 1,
       unresolvedContradictions: 1,
       rank: 3,
@@ -91,7 +87,7 @@ const fixture = {
       temporalRelevance: 82,
       independenceGroup: "deployment.checkout.v2.18.4",
       provenance: {
-        tool: "getRecentDeployments",
+        capability: "DEPLOYMENTS",
         reference: "deployments/checkout/2.18.4",
         capturedAt: "2026-08-29T18:10:00.000Z",
       },
@@ -102,7 +98,7 @@ const fixture = {
       reference: "EV-24",
       investigationId: "55555555-5555-4555-8555-555555555555",
       source: "synthetic-payment-check",
-      sourceType: "SERVICE_HEALTH",
+      sourceType: "RUNTIME_STATE",
       observation:
         "Synthetic checks fail at the same rate on the current and previous checkout versions.",
       reliability: 95,
@@ -112,7 +108,7 @@ const fixture = {
       temporalRelevance: 96,
       independenceGroup: "synthetic.payment.version-comparison",
       provenance: {
-        tool: "getServiceHealth",
+        capability: "RUNTIME_STATE",
         reference: "checks/payment/version-comparison",
         capturedAt: "2026-08-29T18:16:00.000Z",
       },
@@ -133,7 +129,7 @@ const fixture = {
       temporalRelevance: 95,
       independenceGroup: "provider.primary-region.latency",
       provenance: {
-        tool: "getMetrics",
+        capability: "METRICS",
         reference: "metrics/provider-auth-latency/p95",
         capturedAt: "2026-08-29T18:19:00.000Z",
       },
@@ -154,8 +150,8 @@ const fixture = {
       temporalRelevance: 90,
       independenceGroup: "logs.checkout.unavailable",
       provenance: {
-        tool: "searchLogs",
-        reference: null,
+        capability: "LOG_SEARCH",
+        reference: "logs/checkout/provider-errors",
         capturedAt: "2026-08-29T18:22:00.000Z",
       },
       createdAt: "2026-08-29T18:22:00.000Z",
@@ -167,7 +163,6 @@ const fixture = {
       evidenceId: "99999999-9999-4999-8999-999999999999",
       hypothesisId: "66666666-6666-4666-8666-666666666666",
       relation: "SUPPORTS",
-      contradictionSeverity: null,
       weight: 42,
       reasoning:
         "The deployment happened shortly before the alert but is only circumstantial evidence.",
@@ -187,7 +182,6 @@ const fixture = {
       evidenceId: "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
       hypothesisId: "77777777-7777-4777-8777-777777777777",
       relation: "SUPPORTS",
-      contradictionSeverity: null,
       weight: 88,
       reasoning:
         "Provider authorization latency rose sharply during the incident window.",
@@ -197,15 +191,13 @@ const fixture = {
       evidenceId: "cccccccc-cccc-4ccc-8ccc-cccccccccccc",
       hypothesisId: "77777777-7777-4777-8777-777777777777",
       relation: "NEUTRAL",
-      contradictionSeverity: null,
-      weight: 10,
       reasoning:
         "The failed log search reduces evidence coverage but does not directly support or contradict the provider hypothesis.",
     },
   ],
   capabilities: [
     {
-      capability: "SERVICE_HEALTH",
+      capability: "RUNTIME_STATE",
       status: "AVAILABLE",
       freshness: 94,
       reason: null,
@@ -236,12 +228,11 @@ const fixture = {
   integrity: {
     level: "DEGRADED",
     evidenceCoverage: 72,
-    availableSources: 2,
-    degradedSources: 1,
-    unavailableSources: 1,
+    availableCapabilities: 2,
+    degradedCapabilities: 1,
+    unavailableCapabilities: 1,
     independentEvidenceGroups: 4,
     unresolvedContradictions: 1,
-    degradationLevel: 1,
     reasons: [
       "Log search is unavailable.",
       "Provider metrics are partially delayed.",
@@ -251,6 +242,7 @@ const fixture = {
   recommendation: {
     id: "13131313-1313-4313-8313-131313131313",
     investigationId: "55555555-5555-4555-8555-555555555555",
+    hypothesisId: "77777777-7777-4777-8777-777777777777",
     actionType: "TRAFFIC_SHIFT",
     summary: "Shift payment authorization traffic away from the degraded provider region.",
     reasoning:
@@ -260,17 +252,21 @@ const fixture = {
     supportingEvidenceIds: ["bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb"],
     contradictingEvidenceIds: ["aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"],
     investigationIntegrity: "DEGRADED",
+    evidenceCoverage: 72,
+    contradictionPressure: 14,
     createdAt: "2026-08-29T18:23:00.000Z",
   },
   approvalPolicy: {
     recommendationId: "13131313-1313-4313-8313-131313131313",
-    requiredApprovals: 2,
-    requiredRoles: ["INCIDENT_COMMANDER", "ADMIN"],
+    requirements: [
+      { role: "INCIDENT_COMMANDER", count: 1 },
+      { role: "ADMIN", count: 1 },
+    ],
     policyReasons: [
       "Traffic shift has regional blast radius.",
       "Investigation integrity is degraded because log search failed.",
     ],
-    currentApprovals: 1,
+    currentApprovedCount: 1,
     satisfied: false,
   },
   remediation: {

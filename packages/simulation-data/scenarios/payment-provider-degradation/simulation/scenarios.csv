@@ -1,0 +1,2 @@
+id,key,name,description,incidentId,startsAt,endsAt,status
+50000000-0000-4000-8000-000000000001,payment-provider-degradation-001,Payment authorization degradation,Deterministic production-like incident simulation for payment authorization failures,40000000-0000-4000-8000-000000001042,2026-09-19T13:30:00Z,2026-09-19T14:45:00Z,READY

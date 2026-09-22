@@ -1,0 +1,2 @@
+id,incidentId,type,message,metadata,createdAt
+dfdf44b4-b079-5c04-9f8f-88cb170ecca6,40000000-0000-4000-8000-000000001042,incident.detected,Payment authorization error rate crossed the production incident threshold.,{},2026-09-19T14:04:00Z

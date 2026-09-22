@@ -36,9 +36,10 @@ export const InvestigationSection = () => {
           <div className="lg:sticky lg:top-28 lg:self-start">
             <SectionHeading   
               eyebrow="AI investigation"
-              title="Investigation through controlled tools, not open-ended access."
+              title="Investigation through controlled capabilities, not open-ended access."
               description="ResolveOS gives the investigation agent a fixed set of read-only capabilities. It runs them in sequence, records what each returned, and assembles a structured hypothesis from the results."
             />
+            
             <ul className="mt-8 space-y-3.5">
               {POINTS.map((point) => (
                 <li key={point} className="flex gap-3 text-[13.5px] leading-relaxed text-muted-foreground">
@@ -56,7 +57,7 @@ export const InvestigationSection = () => {
             <div className="flex items-center gap-2 border-b border-border bg-surface-inset px-4 py-2.5">
               <Terminal className="h-3.5 w-3.5 text-muted-foreground" />
               <span className="font-mono text-[11px] tracking-wide text-muted-foreground">
-                investigation / INC-1042 / tool calls
+                investigation / INC-1042 / capabilities
               </span>
               <span
                 className={cn(

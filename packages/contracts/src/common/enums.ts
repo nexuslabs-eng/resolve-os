@@ -30,24 +30,11 @@ export const HypothesisStatusSchema = z.enum([
     "CONFIRMED"
 ]);
 
-export const EvidenceRelationTypeSchema = z.enum([
-    "SUPPORTS", 
-    "CONTRADICTS", 
-    "NEUTRAL", 
-    "INVALIDATES"
-]);
-
 export const ContradictionSeveritySchema = z.enum([
     "WEAK", 
     "MODERATE", 
     "STRONG", 
     "INVALIDATING"
-]);
-
-export const EvidenceQualitySchema = z.enum([
-    "LOW", 
-    "MODERATE", 
-    "HIGH"
 ]);
 
 export const IntegrityLevelSchema = z.enum([
@@ -68,11 +55,15 @@ export const CapabilityStatusSchema = z.enum([
 export const EvidenceSourceTypeSchema = z.enum([
     "METRIC",
     "LOG",
+    "TRACE",
     "DEPLOYMENT",
-    "SERVICE_HEALTH",
+    "CHANGE",
+    "RUNTIME_STATE",
+    "ALERT",
+    "TOPOLOGY",
     "INCIDENT_HISTORY",
     "RUNBOOK",
-    "HUMAN_OBSERVATION"
+    "HUMAN_OBSERVATION",
 ]);
 
 export const RecommendationActionTypeSchema = z.enum([
@@ -126,14 +117,18 @@ export const VerificationCheckStatusSchema = z.enum([
 ]);
 
 export const CapabilityNameSchema = z.enum([
-    "SERVICE_HEALTH",
-    "DEPLOYMENTS",
-    "LOG_SEARCH",
+    "SERVICE_TOPOLOGY",
     "METRICS",
+    "LOG_SEARCH",
+    "TRACE_SEARCH",
+    "DEPLOYMENTS",
+    "CHANGE_HISTORY",
+    "RUNTIME_STATE",
+    "ALERTS",
     "INCIDENT_HISTORY",
     "RUNBOOKS",
     "AI_REASONING",
-    "REMEDIATION_AUTOMATION"
+    "REMEDIATION_AUTOMATION",
 ]);
 
 export const ServiceHealthStatusSchema = z.enum([
@@ -148,8 +143,7 @@ export type IncidentSeverity = z.infer<typeof IncidentSeveritySchema>;
 export type IncidentStatus = z.infer<typeof IncidentStatusSchema>;
 export type InvestigationStatus = z.infer<typeof InvestigationStatusSchema>;
 export type HypothesisStatus = z.infer<typeof HypothesisStatusSchema>;
-export type EvidenceRelationType = z.infer<typeof EvidenceRelationTypeSchema>;
 export type ContradictionSeverity = z.infer<typeof ContradictionSeveritySchema>;
-export type EvidenceQuality = z.infer<typeof EvidenceQualitySchema>;
 export type IntegrityLevel = z.infer<typeof IntegrityLevelSchema>;
 export type CapabilityStatus = z.infer<typeof CapabilityStatusSchema>;
+export type EvidenceSourceType = z.infer<typeof EvidenceSourceTypeSchema>;

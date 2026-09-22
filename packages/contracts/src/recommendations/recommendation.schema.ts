@@ -5,11 +5,12 @@ import {
     RecommendationActionTypeSchema,
     TechnicalRiskSchema 
 } from "../common/enums.js";
-import { DateTimeSchema, IdSchema } from "../common/primitives.js";
+import { DateTimeSchema, IdSchema, ScoreSchema } from "../common/primitives.js";
 
 export const RecommendationSchema = z.object({
     id: IdSchema,
     investigationId: IdSchema,
+    hypothesisId: IdSchema,
     actionType: RecommendationActionTypeSchema,
     summary: z.string(),
     reasoning: z.string(),
@@ -18,6 +19,8 @@ export const RecommendationSchema = z.object({
     supportingEvidenceIds: z.array(IdSchema),
     contradictingEvidenceIds: z.array(IdSchema),
     investigationIntegrity: IntegrityLevelSchema,
+    evidenceCoverage: ScoreSchema,
+    contradictionPressure: ScoreSchema,
     createdAt: DateTimeSchema,
 });
 

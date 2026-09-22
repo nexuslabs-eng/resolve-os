@@ -1,0 +1,4 @@
+id,serviceId,name,dependencyType,providerType,protocol,endpoint,criticality,timeoutMs,description,createdAt,updatedAt
+60000000-0000-4000-8000-000000000001,30000000-0000-4000-8000-000000000002,PayFlow Gateway,EXTERNAL_API,PAYMENT_PROCESSOR,HTTPS,https://sandbox.invalid/payflow/v1/authorizations,CRITICAL,5000,Fictional external card authorization provider,2026-01-10T10:20:00Z,2026-09-19T13:30:00Z
+60000000-0000-4000-8000-000000000002,30000000-0000-4000-8000-000000000002,payments-primary,DATABASE,POSTGRESQL,TCP,payments-primary.internal:5432,CRITICAL,2000,Primary payment persistence database,2026-01-10T10:20:00Z,2026-09-19T13:30:00Z
+60000000-0000-4000-8000-000000000003,30000000-0000-4000-8000-000000000002,payments-cache,CACHE,REDIS,TCP,payments-cache.internal:6379,MEDIUM,500,Idempotency and short-lived payment cache,2026-01-10T10:20:00Z,2026-09-19T13:30:00Z

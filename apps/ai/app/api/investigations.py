@@ -17,22 +17,9 @@ def build_scaffold_result(
         {
             "investigationId": request.investigation_id,
             "status": "FAILED",
-            "hypotheses": [],
-            "evidence": [],
-            "relations": [],
-            "integrity": {
-                "level": "LOW",
-                "evidenceCoverage": 0,
-                "availableSources": 0,
-                "degradedSources": 0,
-                "unavailableSources": 0,
-                "independentEvidenceGroups": 0,
-                "unresolvedContradictions": 0,
-                "degradationLevel": 0,
-                "reasons": ["Scaffold only."],
-            },
-            "leadingHypothesisId": None,
-            "recommendation": None,
+            "hypothesisProposals": [],
+            "evidenceInterpretations": [],
+            "recommendationProposal": None,
             "error": "Investigation execution is not implemented.",
         }
     )

@@ -11,7 +11,7 @@ import { RemediationSchema } from "../recommendations/remediation.schema.js";
 import { VerificationSchema } from "../recommendations/verification.schema.js";
 
 const BaseEventSchema = z.object({
-    id: z.string(),
+    id: IdSchema,
     organizationId: IdSchema,
     incidentId: IdSchema,
     timestamp: DateTimeSchema,
@@ -66,14 +66,6 @@ export const IntegrityChangedEventSchema = BaseEventSchema.extend({
     payload: InvestigationIntegritySchema,
 });
 
-export const InvestigationDegradedEventSchema = BaseEventSchema.extend({
-    type: z.literal("investigation.degraded"),
-    payload: z.object({
-        degradationLevel: z.number().int().min(1).max(5),
-        reasons: z.array(z.string()),
-    }),
-});
-
 export const RecommendationReadyEventSchema = BaseEventSchema.extend({
     type: z.literal("investigation.recommendation_ready"),
     payload: RecommendationSchema,
@@ -113,7 +105,6 @@ export const ResolveOSEventSchema = z.discriminatedUnion("type", [
     HypothesisUpdatedEventSchema,
     RankingChangedEventSchema,
     IntegrityChangedEventSchema,
-    InvestigationDegradedEventSchema,
     RecommendationReadyEventSchema,
     ApprovalCompletedEventSchema,
     RemediationStartedEventSchema,

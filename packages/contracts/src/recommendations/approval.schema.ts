@@ -5,6 +5,7 @@ import { DateTimeSchema, IdSchema } from "../common/primitives.js";
 export const ApprovalSchema = z.object({
     id: IdSchema,
     recommendationId: IdSchema,
+    approverId: IdSchema,
     decision: ApprovalDecisionSchema,
     reason: z.string().nullable(),
     createdAt: DateTimeSchema,
@@ -16,4 +17,4 @@ export const SubmitApprovalRequestSchema = z.object({
 });
 
 export type Approval = z.infer<typeof ApprovalSchema>;
-export type  SubmitApprovalRequest = z.infer<typeof SubmitApprovalRequestSchema>;
+export type SubmitApprovalRequest = z.infer<typeof SubmitApprovalRequestSchema>;

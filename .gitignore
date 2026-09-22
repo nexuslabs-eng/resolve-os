@@ -60,3 +60,5 @@ apps/backend/CLAUDE.md
 .idea/
 .DS_Store
 Thumbs.db
+
+.pnpm-store/

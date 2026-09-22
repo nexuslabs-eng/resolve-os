@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { EvidenceQualitySchema, HypothesisStatusSchema } from "../common/enums.js";
+import { HypothesisStatusSchema } from "../common/enums.js";
 import { DateTimeSchema, IdSchema, ScoreSchema } from "../common/primitives.js";
 
 export const HypothesisSchema = z.object({
@@ -10,7 +10,6 @@ export const HypothesisSchema = z.object({
     status: HypothesisStatusSchema,
     supportStrength: ScoreSchema,
     contradictionPressure: ScoreSchema,
-    evidenceQuality: EvidenceQualitySchema,
     independentEvidenceGroups: z.number().int().min(0),
     unresolvedContradictions: z.number().int().min(0),
     rank: z.number().int().min(1),

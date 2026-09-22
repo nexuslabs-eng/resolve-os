@@ -4,7 +4,7 @@ import { DateTimeSchema, IdSchema } from "../common/primitives.js";
 
 export const HypothesisRankingChangeSchema = z.object({
     hypothesisId: IdSchema,
-    previousRank: z.number().int().int().min(1).nullable(),
+    previousRank: z.number().int().min(1).nullable(),
     newRank: z.number().int().min(1),
     previousStatus: HypothesisStatusSchema,
     newStatus: HypothesisStatusSchema,

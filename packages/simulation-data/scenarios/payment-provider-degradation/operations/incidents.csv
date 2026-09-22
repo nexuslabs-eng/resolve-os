@@ -1,0 +1,2 @@
+id,reference,serviceId,title,description,severity,status,startedAt,createdAt,updatedAt
+40000000-0000-4000-8000-000000001042,INC-1042,30000000-0000-4000-8000-000000000002,Elevated payment authorization failures,Payment authorization success rate has fallen below the production threshold. Customers are experiencing elevated checkout failures and increased payment latency.,HIGH,DETECTED,2026-09-19T14:03:00Z,2026-09-19T14:04:00Z,2026-09-19T14:04:00Z

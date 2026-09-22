@@ -1,10 +1,10 @@
 import { z } from "zod";
-import { EvidenceSourceTypeSchema } from "../common/enums.js";
+import { CapabilityNameSchema, EvidenceSourceTypeSchema } from "../common/enums.js";
 import { DateTimeSchema, IdSchema, ScoreSchema } from "../common/primitives.js";
 
 export const EvidenceProvenanceSchema = z.object({
-    tool: z.string().nullable(),
-    reference: z.string().nullable(),
+    capability: CapabilityNameSchema,
+    reference: z.string().min(1),
     capturedAt: DateTimeSchema,
 });
 

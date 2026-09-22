@@ -1,0 +1,4 @@
+id,serviceId,environment,version,previousVersion,commitSha,deployedAt,completedAt,status,initiatedBy,changeSummary
+80000000-0000-4000-8000-000000000001,30000000-0000-4000-8000-000000000002,production,v2.18.0,v2.17.3,a84d6b20f9d2,2026-09-19T13:42:00Z,2026-09-19T13:44:00Z,SUCCEEDED,ci-release-bot,Refactored payment authorization request instrumentation; added provider response timing metadata; updated retry telemetry; reduced duplicate authorization log noise
+80000000-0000-4000-8000-000000000002,30000000-0000-4000-8000-000000000002,production,v2.17.3,v2.17.2,3c91b761a2ef,2026-09-12T10:15:00Z,2026-09-12T10:17:00Z,SUCCEEDED,ci-release-bot,Payment idempotency fixes and dependency updates
+80000000-0000-4000-8000-000000000003,30000000-0000-4000-8000-000000000005,production,v4.8.6,v4.8.5,be92c11e704a,2026-09-18T16:20:00Z,2026-09-18T16:22:00Z,SUCCEEDED,ci-release-bot,Risk rule metadata changes

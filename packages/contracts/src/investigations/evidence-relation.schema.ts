@@ -1,15 +1,32 @@
 import { z } from "zod";
-import { ContradictionSeveritySchema, EvidenceRelationTypeSchema } from "../common/enums.js";
+import { ContradictionSeveritySchema } from "../common/enums.js";
 import { IdSchema, ScoreSchema } from "../common/primitives.js";
 
-export const EvidenceHypothesisRelationSchema = z.object({
+const BaseRelationSchema = z.object({
     id: IdSchema,
     evidenceId: IdSchema,
     hypothesisId: IdSchema,
-    relation: EvidenceRelationTypeSchema,
-    contradictionSeverity: ContradictionSeveritySchema.nullable(),
-    weight: ScoreSchema,
     reasoning: z.string(),
 });
+
+export const EvidenceHypothesisRelationSchema = z.discriminatedUnion(
+    "relation",
+    [
+        BaseRelationSchema.extend({
+            relation: z.literal("SUPPORTS"),
+            weight: ScoreSchema,
+        }),
+
+        BaseRelationSchema.extend({
+            relation: z.literal("CONTRADICTS"),
+            contradictionSeverity: ContradictionSeveritySchema,
+            weight: ScoreSchema,
+        }),
+
+        BaseRelationSchema.extend({
+            relation: z.literal("NEUTRAL"),
+        }),
+    ],
+);
 
 export type EvidenceHypothesisRelation = z.infer<typeof EvidenceHypothesisRelationSchema>;

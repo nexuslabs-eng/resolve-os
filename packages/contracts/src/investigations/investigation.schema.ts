@@ -8,7 +8,6 @@ export const InvestigationSchema = z.object({
     status: InvestigationStatusSchema,
     integrity: IntegrityLevelSchema,
     evidenceCoverage: ScoreSchema,
-    degradationLevel: z.number().int().min(0).max(5),
     leadingHypothesisId: IdSchema.nullable(),
     startedAt: DateTimeSchema,
     completedAt: DateTimeSchema.nullable(),

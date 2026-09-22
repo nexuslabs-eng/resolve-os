@@ -7,7 +7,7 @@ from typing import Annotated
 from pydantic import AfterValidator, BaseModel, BeforeValidator, ConfigDict, Field
 from pydantic.alias_generators import to_camel
 
-MAX_SAFE_INTER = 9_007_199_254_740_991
+MAX_SAFE_INTEGER = 9_007_199_254_740_991
 
 UUID_PATTERN = re.compile(
     r"(?:"
@@ -29,6 +29,16 @@ JS_WHITESPACE = (
     "\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007"
     "\u2008\u2009\u200a\u2028\u2029\u202f\u205f\u3000\ufeff"
 )
+
+
+def validate_non_empty_string(value: str) -> str:
+    normalized = value.strip(JS_WHITESPACE)
+    if not normalized:
+        raise ValueError("Expected a non-empty string")
+    return normalized
+
+
+NonEmptyString = Annotated[str, AfterValidator(validate_non_empty_string)]
 
 
 def validate_id(value: str) -> str:
@@ -59,7 +69,7 @@ def validate_number(value: object) -> object:
     return value
 
 
-def normalize_interger(value: object) -> int:
+def normalize_integer(value: object) -> int:
     validate_number(value)
 
     if isinstance(value, float):
@@ -86,30 +96,31 @@ def validate_evidence_reference(value: str) -> str:
 
 
 Id = Annotated[str, AfterValidator(validate_id)]
+
 DateTime = Annotated[str, AfterValidator(validate_datetime)]
+
 Score = Annotated[
     float,
     Field(ge=0, le=100, allow_inf_nan=False),
     BeforeValidator(validate_number),
 ]
+
 Count = Annotated[
     int,
-    Field(ge=0, le=MAX_SAFE_INTER),
-    BeforeValidator(normalize_interger),
+    Field(ge=0, le=MAX_SAFE_INTEGER),
+    BeforeValidator(normalize_integer),
 ]
+
 Rank = Annotated[
     int,
-    Field(ge=1, le=MAX_SAFE_INTER),
-    BeforeValidator(normalize_interger),
+    Field(ge=1, le=MAX_SAFE_INTEGER),
+    BeforeValidator(normalize_integer),
 ]
-DegradationLevel = Annotated[
-    int,
-    Field(ge=0, le=5),
-    BeforeValidator(normalize_interger),
-]
+
 HypothesisReference = Annotated[
     str, AfterValidator(trim_reference), AfterValidator(validate_hypothesis_reference)
 ]
+
 EvidenceReference = Annotated[
     str,
     AfterValidator(trim_reference),
