@@ -5,16 +5,17 @@ import {
     LoginResponseSchema,
     VerifyEmailOtpRequestSchema,
     VerifyEmailOtpResponseSchema,
-    ResendVerificationOtpResponseSchema,
+    ResendVerificationCodeResponseSchema,
     type SignupRequest,
     type SignupResponse,
     type LoginRequest,
     type LoginResponse,
     type VerifyEmailOtpRequest,
     type VerifyEmailOtpResponse,
-    type ResendVerificationOtpResponse,
+    type ResendVerificationCodeResponse,
 } from "contracts";
 import { axiosClient } from "@/lib/api/axios-client";
+
 
 export const login = async (input: LoginRequest): Promise<LoginResponse> => {
     const response = await axiosClient.post<unknown, unknown>("/auth/login", LoginRequestSchema.parse(input));
@@ -41,8 +42,8 @@ export const verifyEmailOtp = async (
 };
 
 export const resendVerificationOtp = 
-    async (): Promise<ResendVerificationOtpResponse> => {
+    async (): Promise<ResendVerificationCodeResponse> => {
     const response = await axiosClient.post<unknown, unknown>("/auth/resend-verification-otp");
 
-    return ResendVerificationOtpResponseSchema.parse(response);
+    return ResendVerificationCodeResponseSchema.parse(response);
 };

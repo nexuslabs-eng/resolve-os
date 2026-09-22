@@ -1,16 +1,9 @@
-import type {
-  Evidence,
-  EvidenceHypothesisRelation,
-  EvidenceRelationType,
-  Hypothesis,
-} from "contracts";
-import { AlertTriangle, Check, MinusCircle, Terminal, XCircle } from "lucide-react";
-import {
-  getEvidenceDetail,
-  getEvidenceQuality,
-  getEvidenceSourceLabel,
-} from "@/features/marketing/fixtures/incident-mock";
+import type { Evidence, EvidenceHypothesisRelation, Hypothesis } from "contracts";
+import { Check, MinusCircle, Terminal, XCircle } from "lucide-react";
+import { getEvidenceDetail, getEvidenceQuality, getEvidenceSourceLabel } from "@/features/marketing/fixtures/incident-mock";
 import { cn } from "@/lib/utils";
+
+type EvidenceRelation = EvidenceHypothesisRelation["relation"];
 
 interface EvidenceFeedProps {
   evidence: Evidence[];
@@ -19,24 +12,24 @@ interface EvidenceFeedProps {
   revealed: number;
 }
 
-const relationStyles: Record<EvidenceRelationType, string> = {
+const relationStyles: Record<EvidenceRelation, string> = {
   SUPPORTS: "text-success",
   CONTRADICTS: "text-critical",
   NEUTRAL: "text-muted-foreground",
-  INVALIDATES: "text-high",
 };
 
 const RelationIcon = ({
   relation,
   className,
 }: {
-  relation: EvidenceRelationType;
+  relation: EvidenceRelation;
   className?: string;
 }) => {
   const classes = cn(className, relationStyles[relation]);
+
   if (relation === "SUPPORTS") return <Check className={classes} />;
   if (relation === "CONTRADICTS") return <XCircle className={classes} />;
-  if (relation === "INVALIDATES") return <AlertTriangle className={classes} />;
+
   return <MinusCircle className={classes} />;
 };
 
@@ -51,9 +44,13 @@ export const EvidenceFeed = ({
       <Terminal className="h-3 w-3" />
       evidence and relationships
     </p>
+
     <div className="mt-2.5 space-y-2">
       {evidence.map((item, index) => {
-        const evidenceRelation = relations.find((relation) => relation.evidenceId === item.id);
+        const evidenceRelation = relations.find(
+          (relation) => relation.evidenceId === item.id,
+        );
+
         if (!evidenceRelation) return null;
 
         const relatedHypothesis = hypotheses.find(
@@ -77,20 +74,24 @@ export const EvidenceFeed = ({
                 relation={evidenceRelation.relation}
                 className="mt-0.5 h-3.5 w-3.5 shrink-0"
               />
+
               <div className="min-w-0">
                 <p className="text-[12.5px] font-medium leading-tight text-foreground">
                   {item.observation}
                 </p>
+
                 <p className="mt-1 truncate font-mono text-[10.5px] text-muted-foreground">
-                  {getEvidenceSourceLabel(item)} · {getEvidenceDetail(item)}
+                  {getEvidenceSourceLabel(item)} - {getEvidenceDetail(item)}
                 </p>
+
                 <p className="mt-1 font-mono text-[10px] tracking-wider">
                   <span className={relationStyles[evidenceRelation.relation]}>
                     {evidenceRelation.relation}
                   </span>
+
                   <span className="text-muted-foreground">
                     {" "}
-                    {relatedHypothesis?.reference} · quality {getEvidenceQuality(item)}
+                    {relatedHypothesis?.reference} - quality {getEvidenceQuality(item)}
                   </span>
                 </p>
               </div>

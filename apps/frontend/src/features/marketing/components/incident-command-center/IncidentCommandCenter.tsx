@@ -7,7 +7,7 @@ import { RecommendationPanel } from "@/features/marketing/components/incident-co
 import {
   useCountUp,
   useEvidenceTimeline,
-} from "@/features/marketing/components/incident-command-center/use-command-center-timeline";
+} from "@/features/marketing/hooks/use-command-center-timeline";
 import {
   APPROVAL_POLICY,
   EVIDENCE,
@@ -35,7 +35,7 @@ export const IncidentCommandCenter = () => {
   return (
     <section
       aria-label="ResolveOS incident command center preview"
-      className="overflow-hidden rounded-xl border border-border bg-surface shadow-[var(--shadow-elevated)]"
+      className="overflow-hidden rounded-xl border border-border bg-surface shadow-(--shadow-elevated)"
     >
       <IncidentHeader incident={INCIDENT} service={SERVICE} />
 
@@ -49,6 +49,7 @@ export const IncidentCommandCenter = () => {
             revealed={revealed}
             running={running}
           />
+          
           <EvidenceFeed
             evidence={EVIDENCE}
             hypotheses={HYPOTHESES}

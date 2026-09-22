@@ -5,12 +5,12 @@ import { useInView } from "@/hooks/use-in-view";
 import { cn } from "@/lib/utils";
 
 const SOURCES = [
-  "logs",
-  "deployments",
   "metrics",
-  "runbooks",
-  "previous incidents",
-  "service health",
+  "logs",
+  "traces",
+  "deployments",
+  "runtime state",
+  "service topology",
 ];
 
 const PAINS = [

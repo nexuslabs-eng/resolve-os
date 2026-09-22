@@ -30,14 +30,31 @@ assert.deepStrictEqual(
 
 for (const caseData of invalid) {
     const name = caseData.model as keyof typeof schemas;
+    assert.ok(Object.hasOwn(schemas, name), `Unknown fixture model: ${name}`);
+    assert.ok(Array.isArray(caseData.path) && caseData.path.length > 0,
+        "Fixture path must be a non-empty array");
     const value = structuredClone(boundary[name]);
+    const label = `${name}.${caseData.path.join(".")}`;
     let parent = value;
 
     for (const segment of caseData.path.slice(0, -1)) {
+        assert.ok(
+            parent !== null &&
+            typeof parent === "object" &&
+            Object.hasOwn(parent, segment),
+            `Invalid fixture path: ${label}`,
+        );
         parent = parent[segment];
     }
 
     const key = caseData.path.at(-1);
+    assert.ok(
+        key !== undefined &&
+        parent !== null &&
+        typeof parent === "object" &&
+        Object.hasOwn(parent, key),
+        `Invalid fixture target: ${label}`,
+    );
     if (caseData.remove) {
         delete parent[key];
     } else {
@@ -68,11 +85,14 @@ assert.deepStrictEqual(
     schemas.result.parse(output.scaffold),
     output.scaffold,
 );
-assert.equal(output.scaffold.status, "FAILED");
-assert.equal(
-    output.scaffold.investigationId,
-    boundary.request.investigationId,
-);
+assert.deepStrictEqual(output.scaffold, {
+    investigationId: boundary.request.investigationId,
+    status: "FAILED",
+    hypothesisProposals: [],
+    evidenceInterpretations: [],
+    recommendationProposal: null,
+    error: "Investigation execution is not implemented.",
+});
 
 console.log(
     `AI contracts passed: shared fixtures, ${invalid.length} invalid cases, and Python output.`,

@@ -5,15 +5,21 @@ from typing import Literal
 IncidentSeverity = Literal["LOW", "MEDIUM", "HIGH", "CRITICAL"]
 
 CapabilityName = Literal[
-    "SERVICE_HEALTH",
-    "DEPLOYMENTS",
-    "LOG_SEARCH",
+    "SERVICE_TOPOLOGY",
     "METRICS",
+    "LOG_SEARCH",
+    "TRACE_SEARCH",
+    "DEPLOYMENTS",
+    "CHANGE_HISTORY",
+    "RUNTIME_STATE",
+    "ALERTS",
     "INCIDENT_HISTORY",
     "RUNBOOKS",
     "AI_REASONING",
     "REMEDIATION_AUTOMATION",
 ]
+
+TechnicalRisk = Literal["LOW", "MEDIUM", "HIGH"]
 
 CapabilityStatus = Literal["AVAILABLE", "PARTIAL", "STALE", "UNAVAILABLE", "FAILED"]
 
@@ -21,19 +27,19 @@ HypothesisStatus = Literal[
     "CANDIDATE", "PLAUSIBLE", "LEADING", "WEAKENED", "INVALIDATED", "CONFIRMED"
 ]
 
-EvidenceQuality = Literal["LOW", "MODERATE", "HIGH"]
-
 EvidenceSourceType = Literal[
     "METRIC",
     "LOG",
+    "TRACE",
     "DEPLOYMENT",
-    "SERVICE_HEALTH",
+    "CHANGE",
+    "RUNTIME_STATE",
+    "ALERT",
+    "TOPOLOGY",
     "INCIDENT_HISTORY",
     "RUNBOOK",
     "HUMAN_OBSERVATION",
 ]
-
-EvidenceRelationType = Literal["SUPPORTS", "CONTRADICTS", "NEUTRAL", "INVALIDATES"]
 
 ContradictionSeverity = Literal["WEAK", "MODERATE", "STRONG", "INVALIDATING"]
 

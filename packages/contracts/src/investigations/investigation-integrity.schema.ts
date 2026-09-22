@@ -5,12 +5,14 @@ import { ScoreSchema } from "../common/primitives.js";
 export const InvestigationIntegritySchema = z.object({
     level: IntegrityLevelSchema,
     evidenceCoverage: ScoreSchema,
-    availableSources: z.number().int().min(0),
-    degradedSources: z.number().int().min(0),
-    unavailableSources: z.number().int().min(0),
-    independentEvidenceGroups: z.number().int().min(0),
-    unresolvedContradictions: z.number().int().min(0),
-    degradationLevel: z.number().int().min(0).max(5),
+
+    availableCapabilities: z.number().int().nonnegative(),
+    degradedCapabilities: z.number().int().nonnegative(),
+    unavailableCapabilities: z.number().int().nonnegative(),
+
+    independentEvidenceGroups: z.number().int().nonnegative(),
+    unresolvedContradictions: z.number().int().nonnegative(),
+
     reasons: z.array(z.string()),
 });
 

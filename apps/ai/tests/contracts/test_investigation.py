@@ -64,15 +64,21 @@ def test_unknown_properties_are_stripped() -> None:
     assert model.model_dump(mode="json") == BOUNDARY["request"]
 
 
-def test_reference_whitespace_is_trimmed() -> None:
+def test_proposal_text_and_references_are_trimmed() -> None:
     value = deepcopy(BOUNDARY["result"])
-    value["hypotheses"][0]["reference"] = " H1 "
-    value["evidence"][0]["reference"] = " EV-1 "
+    value["hypothesisProposals"][0]["reference"] = " H1 "
+    value["evidenceInterpretations"][0]["hypothesisReference"] = "\tH1\n"
+
+    value["hypothesisProposals"][0]["statement"] = (
+        " Synthetic hypothesis for contract testing "
+    )
+    value["evidenceInterpretations"][0]["reasoning"] = " Synthetic relation "
+    value["recommendationProposal"]["summary"] = " Contract fixture only "
+    value["recommendationProposal"]["reasoning"] = " No real investigation "
 
     model = AIInvestigationResult.model_validate(value)
 
-    assert model.hypotheses[0].reference == "H1"
-    assert model.evidence[0].reference == "EV-1"
+    assert model.model_dump(mode="json", by_alias=True) == BOUNDARY["result"]
 
 
 def test_endpoint_returns_deterministic_scaffold_result() -> None:
@@ -82,17 +88,20 @@ def test_endpoint_returns_deterministic_scaffold_result() -> None:
         first = client.post("/investigations/run", json=BOUNDARY["request"])
         second = client.post("/investigations/run", json=BOUNDARY["request"])
 
-    assert first.status_code == 200
-    assert first.json() == second.json()
+    expected = {
+        "investigationId": BOUNDARY["request"]["investigationId"],
+        "status": "FAILED",
+        "hypothesisProposals": [],
+        "evidenceInterpretations": [],
+        "recommendationProposal": None,
+        "error": "Investigation execution is not implemented.",
+    }
+
+    assert first.status_code == second.status_code == 200
+    assert first.json() == second.json() == expected
 
     result = AIInvestigationResult.model_validate(first.json())
-    assert result.investigation_id == BOUNDARY["request"]["investigationId"]
-    assert result.status == "FAILED"
-    assert result.hypotheses == []
-    assert result.evidence == []
-    assert result.relations == []
-    assert result.recommendation is None
-    assert result.error == "Investigation execution is not implemented."
+    assert result.model_dump(mode="json", by_alias=True) == expected
 
 
 def test_endpoint_rejects_invalid_request() -> None:
@@ -104,3 +113,26 @@ def test_endpoint_rejects_invalid_request() -> None:
         response = client.post("/investigations/run", json=value)
 
     assert response.status_code == 422
+
+
+@pytest.mark.parametrize(
+    "capability",
+    ["SERVICE_TOPOLOGY", "TRACE_SEARCH", "CHANGE_HISTORY", "RUNTIME_STATE", "ALERTS"],
+)
+def test_new_capabilities_are_accepted(capability: str) -> None:
+    value = deepcopy(BOUNDARY["request"])
+    value["capabilityStates"][0]["capability"] = capability
+
+    model = StartAIInvestigationRequest.model_validate(value)
+
+    assert model.capability_states[0].capability == capability
+
+
+@pytest.mark.parametrize("relation", ["SUPPORTS", "CONTRADICTS", "NEUTRAL"])
+def test_evidence_interpretation_relations_are_accepted(relation: str) -> None:
+    value = deepcopy(BOUNDARY["result"])
+    value["evidenceInterpretations"][0]["relation"] = relation
+
+    model = AIInvestigationResult.model_validate(value)
+
+    assert model.evidence_interpretations[0].relation == relation
