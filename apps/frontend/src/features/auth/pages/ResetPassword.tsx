@@ -25,7 +25,7 @@ const ResetPassword = () => {
         formState: { errors, isSubmitting } } = useForm<ResetPasswordForm>({
         resolver: zodResolver(ResetPasswordFormSchema), 
         defaultValues: { password: "", confirmPassword: "" }, 
-        mode: "onSubmit",
+        mode: "onChange",
     });
 
     const submit = async (values: ResetPasswordForm) => {
@@ -78,7 +78,7 @@ const ResetPassword = () => {
     
     return ( 
         <>
-            <AuthBackButton disabled={isSubmitting} />
+            <AuthBackButton disabled={isSubmitting} onClick={() => navigate("/login")} />
 
             <AuthFormHeader 
                 title="Reset your password" 

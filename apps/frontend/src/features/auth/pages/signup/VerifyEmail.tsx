@@ -5,7 +5,6 @@ import { Controller, useForm, useWatch } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { Field, FieldError } from "@/components/ui/field";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
-import { verifyEmailOtp } from "@/features/auth/api/auth";
 import { AuthFormHeader } from "@/features/auth/components/AuthFormHeader";
 import { AuthSubmitButton } from "@/features/auth/components/AuthSubmitButton";
 import { AuthBackButton } from "@/features/auth/components/AuthBackButton";
@@ -16,13 +15,8 @@ import { RefreshCcw } from "lucide-react";
 import { useAuthSession } from "@/features/auth/hooks/use-auth-session";
 import { isApiClientError } from "@/lib/api/api-client-error";
 import { useLogout } from "@/features/auth/hooks/use-logout"; 
-
-const errorMessage = {
-    INVALID_VERIFICATION_CODE: "The verification code is invalid.",
-    VERIFICATION_CODE_EXPIRED: "This code has expired. Request a new one.",
-    VERIFICATION_ATTEMPTS_EXCEEDED: "Too many attempts. Request a new code.",
-} as const;
-
+import { cn } from "@/lib/utils";
+import { verifyEmail } from "@/features/auth/lib/email-verification";
 
 const VerifyEmail = () => {
     const navigate = useNavigate();
@@ -49,32 +43,6 @@ const VerifyEmail = () => {
     });
     
     const otp = useWatch({ control, name: "otp" });
-    
-    const verifyEmail = async (values: VerifyEmailOtpRequest) => {
-        try {
-            const response = await verifyEmailOtp(values);
-
-            if (response.nextStep === "CREATE_WORKSPACE") {
-                navigate("/signup/workspace");
-            }
-        } catch (error: unknown) {
-            const code = isApiClientError(error) ? error.code : undefined;
-            
-            if (code === "INVALID_VERIFICATION_CODE" ||
-                code === "VERIFICATION_CODE_EXPIRED" ||
-                code === "VERIFICATION_ATTEMPTS_EXCEEDED"
-            ) {
-                
-                setError("otp", { message: errorMessage[code] });
-            } else if (code === "EMAIL_ALREADY_VERIFIED") {
-                navigate("/signup/workspace", { replace: true });
-            } else {
-                setError("root", {
-                    message: "Unable to verify your email. Please try again."
-                })
-            }
-        }
-    };
     
     const resendError =
         resend.isError &&
@@ -105,7 +73,10 @@ const VerifyEmail = () => {
                 }
             />
 
-            <form noValidate onSubmit={handleSubmit(verifyEmail)}>
+            <form
+                noValidate
+                onSubmit={handleSubmit(values => verifyEmail(values, navigate, setError))}
+            >
                 <Field name="otp" invalid={Boolean(errors.otp)}>
 
                     <Controller
@@ -175,15 +146,13 @@ const VerifyEmail = () => {
                     disabled={busy}
                     onClick={() => resend.mutate()}
                 >
-                    <RefreshCcw size={8} />
-                    Resend code
+                    <RefreshCcw size={8} className={cn(resend.isPending && "animate-spin")} />
+                    {resend.isPending ? "Sending code..." : "Resend code" }
                 </Button>
 
 
-                <p role="status" className="text-success">
-                    {resend.isPending 
-                    ? "Sending code..." 
-                    : resend.isSuccess
+                <p role="status" className="text-success text-xs italic">
+                    {resend.isSuccess
                         ? "New verification code has been sent."
                         : ""
                     }
@@ -212,7 +181,7 @@ const VerifyEmail = () => {
                         role="alert"
                         className="mt-3 text-center text-sm text-destructive"
                     >
-                        Unable to restart signup. Please try again.
+                        Unable to restart signup. Please try again. {restartSignup.error.message}
                     </p>
                 )}
             </div>

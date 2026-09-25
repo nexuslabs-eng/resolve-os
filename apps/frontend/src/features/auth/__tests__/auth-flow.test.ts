@@ -59,7 +59,7 @@ describe("authentication and onboarding flow", () => {
         });
 
         expect(await logout()).toEqual({
-            authenticated: false,
+            loggedOut: true,
         });
 
         expect(await getAuthSession()).toEqual({

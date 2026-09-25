@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
@@ -8,20 +9,22 @@ import { AuthFormHeader } from "@/features/auth/components/AuthFormHeader";
 import { AuthStepProgress } from "@/features/auth/components/AuthStepProgress";
 import { AuthSubmitButton } from "@/features/auth/components/AuthSubmitButton";
 import { PasswordInput } from "@/features/auth/components/PasswordInput";
-import { SocialAuthButtons } from "@/features/auth/components/SocialAuthButtons";
+import { SocialAuthButtons, type ProviderHandle } from "@/features/auth/components/SocialAuthButtons";
 import { SignupAccountSchema, type SignupAccountValues } from "@/features/auth/schemas/auth.schemas";
-import { signupAccount } from "@/features/auth/api/auth";
 import { AuthBackButton } from "@/features/auth/components/AuthBackButton";
-import { isApiClientError } from "@/lib/api/api-client-error";
+import { useExitToMarketing } from "@/features/auth/hooks/use-exit-to-marketing";
+import { continueWithAccount, getSignupProviderHandles } from "@/features/auth/lib/account";
 
 const Account = () => {
     const navigate = useNavigate();
+    const [isProviderLoading, setIsProviderLoading] = useState({ google: false, github: false });
+    const { exitToMarketing, isExiting } = useExitToMarketing();
 
     const {
         register,
         handleSubmit,
         setError,
-        formState: { errors, isSubmitting, isValid },
+        formState: { errors, isSubmitting, isValid }
     } = useForm<SignupAccountValues>({
         resolver: zodResolver(SignupAccountSchema),
         mode: "onChange",
@@ -33,33 +36,18 @@ const Account = () => {
         },
     });
 
-    const continueWithAccount = async (values: SignupAccountValues) => {
-        try {
-            const response = await signupAccount({
-            email: values.email,
-            fullName: values.fullName,
-            password: values.password,
-            });
+    const { signupWithGoogle, signupWithGithub } = getSignupProviderHandles(setIsProviderLoading);
 
-            if (response.nextStep === "VERIFY_EMAIL") {
-                navigate("/signup/verify-email");
-            }
-        } catch (error: unknown) {
-            if (isApiClientError(error) && error.code === "EMAIL_ALREADY_REGISTERED") {
-                setError("email", {
-                    message: "An account already exists for this email.",
-                });
-                return;
-            }
-            setError("root", {
-                message: "Unable to create your account. Please try again.",
-            });
-        }
+    const providerHandle: ProviderHandle = {
+        google: signupWithGoogle,
+        github: signupWithGithub
     };
 
     return (
         <>
-            <AuthBackButton onClick={() => navigate("/")} disabled={isSubmitting} />
+            <AuthBackButton
+            onClick={exitToMarketing}
+            disabled={isSubmitting || isExiting} />
 
             <AuthStepProgress currentStep={1} totalSteps={3} label="Account" />
 
@@ -69,9 +57,16 @@ const Account = () => {
                 className="mb-8"
             />
 
-            <SocialAuthButtons mode="signup" disabled onSelect={() => undefined} />
+            <SocialAuthButtons
+                mode="signup"
+                isProviderLoading={isProviderLoading}
+                providerHandle={providerHandle} 
+            />
 
-            <form noValidate onSubmit={handleSubmit(continueWithAccount)}>
+            <form
+                noValidate
+                onSubmit={handleSubmit(values => continueWithAccount(values, navigate, setError))}
+            >
                 <div className="space-y-5">
                     <Field name="email" invalid={Boolean(errors.email)}>
                         <FieldLabel>Work email</FieldLabel>

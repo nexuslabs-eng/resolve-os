@@ -1,8 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { 
-    ProfileSetupRequestSchema,
-    type ProfileSetupRequest,
-} from "contracts";
+import { ProfileSetupRequestSchema, type ProfileSetupRequest } from "contracts";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
@@ -13,6 +10,7 @@ import { AuthStepProgress } from "@/features/auth/components/AuthStepProgress";
 import { AuthSubmitButton } from "@/features/auth/components/AuthSubmitButton";
 import { JOB_ROLES, TEAM_SIZES, RESPONSIBILITIES } from "@/features/auth/fixtures/profile";
 import { AuthBackButton } from "@/features/auth/components/AuthBackButton";
+import { refreshAuthSession } from "@/features/auth/queries/auth-session-query-options";
 
 const ProfileSetup = () => {
     const navigate = useNavigate();
@@ -36,10 +34,11 @@ const ProfileSetup = () => {
         values: ProfileSetupRequest,
     ) => {
         try {
-        const response = await completeProfile(values);
+        await completeProfile(values);
+        const session = await refreshAuthSession();
 
-        if (response.nextStep === "COMPLETE") {
-            navigate("/signup/complete");
+        if (session.authenticated && session.onboarding.nextStep === "COMPLETE") {
+            navigate("/signup/complete", { replace: true });
         }
         } catch {
         setError("root", {
@@ -50,7 +49,7 @@ const ProfileSetup = () => {
 
     return (
         <>
-            <AuthBackButton disabled={isSubmitting} />
+            <AuthBackButton disabled={isSubmitting} onClick={() => navigate("/signup/workspace")} />
             <AuthStepProgress currentStep={3} totalSteps={3} label="Profile" />
 
             <AuthFormHeader

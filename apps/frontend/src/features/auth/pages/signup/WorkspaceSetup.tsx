@@ -74,7 +74,7 @@ const WorkspaceSetup = () => {
 
     return (
         <>
-            <AuthBackButton disabled={isSubmitting} />
+            <AuthBackButton disabled={isSubmitting} onClick={() => navigate("/signup/account")} />
             
             <AuthStepProgress currentStep={2} totalSteps={3} label="Workspace" />
 

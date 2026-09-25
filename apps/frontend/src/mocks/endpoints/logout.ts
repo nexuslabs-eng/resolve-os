@@ -1,4 +1,4 @@
-import { AnonymousAuthSessionSchema } from "contracts";
+import { AnonymousAuthSessionSchema, LogoutResponseSchema } from "contracts";
 import { http, HttpResponse } from "msw";
 import { setAuthSession } from "@/mocks/utils";
 import { apiEndpoint } from "@/lib/api/api-config";
@@ -6,10 +6,11 @@ import { apiEndpoint } from "@/lib/api/api-config";
 export const logout = http.post(
     apiEndpoint("/auth/logout"),
     () => {
-        const session = AnonymousAuthSessionSchema.parse({ authenticated: false });
+        const anonymousSession = AnonymousAuthSessionSchema.parse({ authenticated: false });
+        const response = LogoutResponseSchema.parse({ loggedOut: true })
 
-        setAuthSession(session);
+        setAuthSession(anonymousSession);
 
-        return HttpResponse.json(session);
+        return HttpResponse.json(response);
     },
 );

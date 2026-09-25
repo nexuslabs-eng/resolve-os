@@ -6,6 +6,7 @@ import type { UseFormClearErrors, UseFormRegisterReturn, UseFormSetError } from 
 import { isApiClientError } from "@/lib/api/api-client-error";
 import type { NavigateFunction } from "react-router-dom";
 import { createWorkspace } from "@/features/auth/api/onboarding";
+import { refreshAuthSession } from "@/features/auth/queries/auth-session-query-options";
 
 type SetError = UseFormSetError<WorkspaceSetupRequest>
 type SlugAvailability = UseMutationResult<{ slug: string; available: boolean; }, Error, string, unknown>
@@ -49,10 +50,11 @@ export const continueWithWorkspace = async (
 
 ) => {
     try {
-        const response = await createWorkspace(values);
+        await createWorkspace(values);
+        const session = await refreshAuthSession();
 
-        if (response.nextStep === "PROFILE") {
-            navigate("/signup/profile");
+        if (session.authenticated && session.onboarding.nextStep === "PROFILE") {
+            navigate("/signup/profile", { replace: true });
         }
     } catch (error: unknown) {
         if (isApiClientError(error) && error.code === "WORKSPACE_SLUG_UNAVAILABLE") {
