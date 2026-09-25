@@ -6,7 +6,6 @@ import { API_BASE_URL } from "@/lib/api/api-config";
 
 export const axiosClient = axios.create({
     baseURL: API_BASE_URL,
-    timeout: 10_000,
     withCredentials: true,
     headers: {
         "Content-Type": "application/json",

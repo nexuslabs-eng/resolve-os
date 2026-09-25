@@ -8,9 +8,7 @@ import { AppLoading } from "@/components/loading/AppLoading";
 import RouteErrorBoundary from "@/features/errors/pages/RouteErrorBoundary";
 import { publicAuthRoutes, protectedOnboardingRoutes } from "@/app/router/auth";
 import { PublicRoute } from "@/app/routes/PublicRoute";
-import { publicRouteLoader } from "@/app/routes/loader/public";
 import { ProtectedRoute } from "@/app/routes/ProtectedRoute";
-import { protectedRouteLoader } from "@/app/routes/loader/protected";
 
 const CommandCenterDataFlowTest = lazy(() =>
   import("@/features/command-center/components/command-center-data-flow-test").then(
@@ -34,15 +32,8 @@ export const router = createBrowserRouter([
       {
         Component: AuthLayout,
         children: [
-          {
-            Component: PublicRoute,
-            loader: publicRouteLoader,
-            children: publicAuthRoutes
-          },
-          {
-            Component: ProtectedRoute,
-            children: protectedOnboardingRoutes
-          }
+          { Component: PublicRoute, children: publicAuthRoutes },
+          { Component: ProtectedRoute, children: protectedOnboardingRoutes }
         ]
       },
       {
@@ -50,15 +41,11 @@ export const router = createBrowserRouter([
         children: [
           {
             path: "data-flow-test/:incidentId",
-            loader: protectedRouteLoader,
             Component: CommandCenterDataFlowTest,
           }
         ]
       },
-      {
-        path: "*",
-        Component: NotFound
-      }
+      { path: "*", Component: NotFound }
     ],
   },
 ]);

@@ -1,6 +1,5 @@
 import { lazy } from "react";
 import { redirect, type RouteObject } from "react-router-dom";
-import { protectedRouteLoader } from "@/app/routes/loader/protected";
 
 const Login = lazy(() => import("@/features/auth/pages/Login"));
 const Account = lazy(() => import("@/features/auth/pages/signup/Account"));
@@ -28,8 +27,8 @@ export const publicAuthRoutes: RouteObject[] = [
 ];
 
 export const protectedOnboardingRoutes: RouteObject[] = [
-    { path: "signup/verify-email", loader: protectedRouteLoader, Component: VerifyEmail },
-    { path: "signup/workspace", loader: protectedRouteLoader, Component: WorkspaceSetup },
-    { path: "signup/profile", loader: protectedRouteLoader, Component: ProfileSetup },
-    { path: "signup/complete", loader: protectedRouteLoader, Component: Complete },
+    { path: "signup/verify-email", Component: VerifyEmail },
+    { path: "signup/workspace", Component: WorkspaceSetup },
+    { path: "signup/profile", Component: ProfileSetup },
+    { path: "signup/complete", Component: Complete },
 ];

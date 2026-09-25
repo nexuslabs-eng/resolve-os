@@ -15,7 +15,7 @@ import {
     type ResendVerificationCodeResponse,
 } from "contracts";
 import { axiosClient } from "@/lib/api/axios-client";
-
+import { API_BASE_URL } from "@/lib/api/api-config";
 
 export const login = async (input: LoginRequest): Promise<LoginResponse> => {
     const response = await axiosClient.post<unknown, unknown>("/auth/login", LoginRequestSchema.parse(input));
@@ -47,3 +47,11 @@ export const resendVerificationOtp =
 
     return ResendVerificationCodeResponseSchema.parse(response);
 };
+
+export const continueWithGoogle = async () => {
+    window.location.assign(`${API_BASE_URL}/auth/google`);
+}
+
+export const continueWithGithub = async () => {
+    window.location.assign(`${API_BASE_URL}/auth/github`);
+}

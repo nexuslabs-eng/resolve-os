@@ -1,4 +1,11 @@
-import { AnonymousAuthSessionSchema, AuthSessionSchema, type AnonymousAuthSession, type AuthSession } from "contracts";
+import {
+    AnonymousAuthSessionSchema,
+    AuthSessionSchema,
+    LogoutResponseSchema,
+    type AnonymousAuthSession,
+    type AuthSession,
+    type LogoutResponse
+} from "contracts";
 import { axiosClient } from "@/lib/api/axios-client";
 
 export const getAuthSession = async (): Promise<AuthSession> => {
@@ -7,8 +14,10 @@ export const getAuthSession = async (): Promise<AuthSession> => {
     return AuthSessionSchema.parse(response);
 };
 
-export const logout = async (): Promise<AnonymousAuthSession> => {
+export const logout = async (): Promise<LogoutResponse> => {
     const response = await axiosClient.post<unknown, unknown>("/auth/logout");
 
-    return AnonymousAuthSessionSchema.parse(response);
+    return LogoutResponseSchema.parse(response);
 };
+
+export const anonymousSession = (): AnonymousAuthSession => AnonymousAuthSessionSchema.parse({ authenticated: false });
