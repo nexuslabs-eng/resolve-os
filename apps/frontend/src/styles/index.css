@@ -164,6 +164,30 @@
   ::selection {
     background: color-mix(in oklab, var(--primary) 35%, transparent);
   }
+
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary) var(--surface-inset);
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 2px;
+    height: 2px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: var(--surface-inset);
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    border: 1px solid var(--surface-inset);
+    border-radius: 999px;
+    background: var(--primary);
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-bright);
+  }
 }
 
 

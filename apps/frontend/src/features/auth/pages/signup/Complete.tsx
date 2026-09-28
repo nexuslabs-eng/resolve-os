@@ -1,6 +1,5 @@
 import { Check } from "lucide-react";
 import { useNavigate } from "react-router-dom"; 
-import { MOCK_AUTH_DESTINATION } from "@/features/auth/fixtures/auth.constant";
 import { AuthStatusPanel } from "@/features/auth/components/AuthStatusPanel";
 import { AuthSubmitButton } from "@/features/auth/components/AuthSubmitButton";
 import { AuthSummary } from "@/features/auth/components/AuthSummary";
@@ -43,7 +42,7 @@ const Complete = () => {
 
                 <AuthSubmitButton
                     type="button"
-                    onClick={() => navigate(MOCK_AUTH_DESTINATION, {replace: true})}
+                    onClick={() => navigate("/workspace", {replace: true})}
                 >
                     Enter ResolveOS
                 </AuthSubmitButton>

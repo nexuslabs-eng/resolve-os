@@ -9,12 +9,9 @@ import RouteErrorBoundary from "@/features/errors/pages/RouteErrorBoundary";
 import { publicAuthRoutes, protectedOnboardingRoutes } from "@/app/router/auth";
 import { PublicRoute } from "@/app/routes/PublicRoute";
 import { ProtectedRoute } from "@/app/routes/ProtectedRoute";
+import { WorkspaceLayout } from "@/layouts/WorkspaceLayout";
+import { WorkspaceOverview } from "@/features/workspace/pages/WorkspaceOverview";
 
-const CommandCenterDataFlowTest = lazy(() =>
-  import("@/features/command-center/components/command-center-data-flow-test").then(
-    (module) => ({ default: module.CommandCenterDataFlowTest }),
-  ),
-);
 const NotFound = lazy(() => import("@/features/errors/pages/NotFound"));
 
 export const router = createBrowserRouter([
@@ -40,8 +37,8 @@ export const router = createBrowserRouter([
         Component: ProtectedRoute,
         children: [
           {
-            path: "data-flow-test/:incidentId",
-            Component: CommandCenterDataFlowTest,
+            Component: WorkspaceLayout,
+            children: [{ path: "workspace", Component: WorkspaceOverview }],
           }
         ]
       },
