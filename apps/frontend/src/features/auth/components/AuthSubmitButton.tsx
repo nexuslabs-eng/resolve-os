@@ -1,5 +1,5 @@
 import type { ComponentProps, ReactNode } from "react";
-import { ArrowRight, Loader2 } from "lucide-react";
+import { ArrowRight, Loader } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -30,7 +30,7 @@ export const AuthSubmitButton = ({
         >
             {loading ? (
             <>
-                <Loader2 aria-hidden="true" className="animate-spin" />
+                <Loader aria-hidden="true" className="animate-spin" />
                 {loadingLabel}
             </>
             ) : (

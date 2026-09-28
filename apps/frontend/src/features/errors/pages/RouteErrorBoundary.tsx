@@ -2,10 +2,12 @@ import { Home, RefreshCw, TriangleAlert } from "lucide-react";
 import { isRouteErrorResponse, useRouteError } from "react-router-dom";
 import { ResolutionNode } from "@/components/brand/ResolutionNode";
 import { Button } from "@/components/ui/button";
+import { useAuthSession } from "@/features/auth/hooks/use-auth-session";
 
 const RouteErrorBoundary = () => {
     const error = useRouteError();
     const status = isRouteErrorResponse(error) ? error.status : 500;
+    const { data: session } = useAuthSession();
 
     return (
         <main className="relative grid min-h-svh place-items-center overflow-hidden bg-background px-5 py-12">
@@ -47,10 +49,14 @@ const RouteErrorBoundary = () => {
                     <Button
                         type="button"
                         variant="brand"
-                        onClick={() => window.location.assign("/")}
+                        onClick={() =>
+                            window.location.assign(
+                                session?.authenticated ? "/workspace" : "/",
+                            )
+                        }
                     >
                         <Home aria-hidden="true" />
-                        ResolveOS home
+                        Return to ResolveOS
                     </Button>
                 </div>
             </section>

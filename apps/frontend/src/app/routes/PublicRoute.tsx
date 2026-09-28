@@ -1,5 +1,4 @@
 import { AppLoading } from "@/components/loading/AppLoading";
-import { MOCK_AUTH_DESTINATION } from "@/features/auth/fixtures/auth.constant";
 import { useAuthSession } from "@/features/auth/hooks/use-auth-session";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { onboardingRoutes, recoveryRoutes } from "@/app/routes/constants";
@@ -34,7 +33,7 @@ export const PublicRoute = () => {
 
     if (authSession.onboarding.status === "COMPLETED") {
         return (
-            <Navigate to={MOCK_AUTH_DESTINATION} replace />
+            <Navigate to="/workspace" replace />
         );
     }
 

@@ -1,0 +1,54 @@
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogBackdrop,
+  DialogContent,
+  DialogDescription,
+  DialogPortal,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Loader } from "lucide-react";
+
+interface SignOutDialogProps {
+  open: boolean;
+  loading: boolean;
+  onOpenChange: (open: boolean) => void;
+  onConfirm: () => void;
+}
+
+export const SignOutDialog = ({ open, loading, onOpenChange, onConfirm }: SignOutDialogProps) => (
+  <Dialog open={open} onOpenChange={onOpenChange}>
+    <DialogPortal>
+      <DialogBackdrop />
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <DialogContent>
+          <DialogTitle>Sign out of ResolveOS?</DialogTitle>
+          <DialogDescription>
+            You will need to sign in again to access this workspace.
+          </DialogDescription>
+          <div className="mt-6 flex justify-end gap-2">
+            <Button type="button" variant="subtle" onClick={() => onOpenChange(false)}>
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              disabled={loading}
+              variant="brand"
+              onClick={() => {
+                onOpenChange(false);
+                onConfirm();
+              }}
+            >
+              {loading ? (
+                <>
+                  <Loader aria-hidden="true" className="animate-spin" />
+                  Signing out...
+                </>
+              ) : "Sign out"}
+            </Button>
+          </div>
+        </DialogContent>
+      </div>
+    </DialogPortal>
+  </Dialog>
+);

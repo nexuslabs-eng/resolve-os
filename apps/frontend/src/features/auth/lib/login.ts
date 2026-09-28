@@ -1,5 +1,4 @@
 import type { NavigateFunction } from "react-router-dom";
-import { MOCK_AUTH_DESTINATION } from "../fixtures/auth.constant";
 import type { LoginValues } from "../schemas/auth.schemas";
 import { continueWithGithub, continueWithGoogle, login } from "../api/auth";
 import { refreshAuthSession } from "../queries/auth-session-query-options";
@@ -65,7 +64,7 @@ export const completeLogin = async (
         }
 
         if (session.onboarding.status === "COMPLETED") {
-            navigate(MOCK_AUTH_DESTINATION, { replace: true });
+            navigate("/workspace", { replace: true });
             return;
         }
 

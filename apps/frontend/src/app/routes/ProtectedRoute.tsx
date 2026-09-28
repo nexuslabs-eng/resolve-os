@@ -1,5 +1,4 @@
 import { AppLoading } from "@/components/loading/AppLoading";
-import { MOCK_AUTH_DESTINATION } from "@/features/auth/fixtures/auth.constant";
 import { useAuthSession } from "@/features/auth/hooks/use-auth-session";
 import type { AuthenticatedAuthSession } from "contracts";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
@@ -33,9 +32,9 @@ export const ProtectedRoute = () => {
     const nextRoute = getNextRoute(authSession);
 
     if (authSession.onboarding.status === "COMPLETED") {
-        if (pathname.startsWith("/signup")) {
+        if (pathname.startsWith("/signup") && pathname !== "/signup/complete") {
             return (
-                <Navigate to={MOCK_AUTH_DESTINATION} replace />
+                <Navigate to="/signup/complete" replace />
             );
         }
 
