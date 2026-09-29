@@ -18,7 +18,8 @@ beforeAll(async () => {
 describe("POST /auth/login", () => {
   it("logs in with valid credentials", async () => {
     const fakeUser = buildFakeUser({ passwordHash });
-    prismaMock.user.findUnique.mockResolvedValue(fakeUser);
+    const userWithMembershipCount = { ...fakeUser, _count: { memberships: 0 } };
+    prismaMock.user.findUnique.mockResolvedValue(userWithMembershipCount);
 
     const response = await request(app).post("/auth/login").send({
       email: fakeUser.email,

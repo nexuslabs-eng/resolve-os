@@ -13,20 +13,58 @@ enum AuthProvider {
   GITHUB
 }
 
+enum Role {
+  OBSERVER
+  ENGINEER
+  INCIDENT_COMMANDER
+  ADMIN
+}
+
+enum JobRole {
+  SOFTWARE_ENGINEER
+  SITE_RELIABILITY_ENGINEER
+  DEVOPS_PLATFORM_ENGINEER
+  ENGINEERING_MANAGER
+  INCIDENT_COMMANDER
+  OTHER
+}
+
+enum TeamSize {
+  ONE_TO_FIVE
+  SIX_TO_TWENTY
+  TWENTY_ONE_TO_FIFTY
+  FIFTY_ONE_TO_TWO_HUNDRED
+  TWO_HUNDRED_PLUS
+}
+
+enum PrimaryResponsibility {
+  APPLICATION_ENGINEERING
+  RELIABILITY_SRE
+  PLATFORM_ENGINEERING
+  INFRASTRUCTURE
+  ENGINEERING_LEADERSHIP
+  OTHER
+}
+
 model User {
-  id                        String       @id @default(uuid())
+  id                        String                 @id @default(uuid())
   fullName                  String
-  email                     String       @unique
+  email                     String                 @unique
   passwordHash              String?
   authProvider              AuthProvider
-  emailVerified             Boolean      @default(false)
+  emailVerified             Boolean                @default(false)
+  jobRole                   JobRole?
+  teamSize                  TeamSize?
+  primaryResponsibility     PrimaryResponsibility?
+  onboardingCompletedAt     DateTime?
   verificationCode          String?
-  verificationAttempts      Int          @default(0)
+  verificationAttempts      Int                    @default(0)
   verificationCodeExpires   DateTime?
-  passwordResetTokenHash    String?      @unique
+  passwordResetTokenHash    String?                @unique
   passwordResetTokenExpires DateTime?
-  createdAt                 DateTime     @default(now())
-  updatedAt                 DateTime     @updatedAt
+  createdAt                 DateTime               @default(now())
+  updatedAt                 DateTime               @updatedAt
+  memberships               Membership[]
 }
 
 // Matches connect-pg-simple's expected table exactly (sid/sess/expire),
@@ -40,4 +78,26 @@ model Session {
 
   @@index([expire], map: "IDX_session_expire")
   @@map("session")
+}
+
+model Organization {
+  id          String       @id @default(uuid())
+  name        String
+  slug        String       @unique
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  memberships Membership[]
+}
+
+model Membership {
+  id             String   @id @default(uuid())
+  userId         String
+  organizationId String
+  role           Role
+  createdAt      DateTime @default(now())
+
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, organizationId])
 }

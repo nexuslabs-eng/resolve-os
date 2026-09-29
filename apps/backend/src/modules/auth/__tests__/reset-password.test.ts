@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import request from "supertest";
-import { ResetPasswordResponseSchema } from "contracts";
+import { ResetPasswordResponseSchema, ValidateResetTokenResponseSchema } from "contracts";
 import app from "../../../app.js";
 import { prismaMock } from "../../../test/mocks/prisma.js";
 import { buildFakeUser } from "../../../test/fixtures.js";
@@ -85,6 +85,64 @@ describe("POST /auth/reset-password", () => {
       .send({ token: "too-short", password: "weak" });
 
     expect(response.status).toBe(400);
+    expect(prismaMock.user.findUnique).not.toHaveBeenCalled();
+  });
+});
+
+describe("GET /auth/reset-password/validate", () => {
+  it("reports a valid, unexpired token as valid", async () => {
+    const fakeUser = buildFakeUser({
+      passwordResetTokenExpires: new Date(Date.now() + 10 * 60 * 1000),
+    });
+    prismaMock.user.findUnique.mockResolvedValue(fakeUser);
+
+    const response = await request(app).get(
+      `/auth/reset-password/validate?token=${VALID_TOKEN}`,
+    );
+
+    expect(response.status).toBe(200);
+    const body = ValidateResetTokenResponseSchema.parse(response.body);
+    expect(body).toMatchObject({ valid: true });
+  });
+
+  it("rejects an unrecognized token", async () => {
+    prismaMock.user.findUnique.mockResolvedValue(null);
+
+    const response = await request(app).get(
+      `/auth/reset-password/validate?token=${VALID_TOKEN}`,
+    );
+
+    expect(response.status).toBe(400);
+    expect(response.body).toMatchObject({
+      error: { code: "PASSWORD_RESET_TOKEN_INVALID" },
+    });
+  });
+
+  it("rejects an expired token", async () => {
+    const fakeUser = buildFakeUser({
+      passwordResetTokenExpires: new Date(Date.now() - 60 * 1000),
+    });
+    prismaMock.user.findUnique.mockResolvedValue(fakeUser);
+
+    const response = await request(app).get(
+      `/auth/reset-password/validate?token=${VALID_TOKEN}`,
+    );
+
+    expect(response.status).toBe(400);
+    expect(response.body).toMatchObject({
+      error: { code: "PASSWORD_RESET_TOKEN_EXPIRED" },
+    });
+  });
+
+  it("rejects a malformed token without touching the database", async () => {
+    const response = await request(app).get(
+      "/auth/reset-password/validate?token=too-short",
+    );
+
+    expect(response.status).toBe(400);
+    expect(response.body).toMatchObject({
+      error: { code: "PASSWORD_RESET_TOKEN_INVALID" },
+    });
     expect(prismaMock.user.findUnique).not.toHaveBeenCalled();
   });
 });

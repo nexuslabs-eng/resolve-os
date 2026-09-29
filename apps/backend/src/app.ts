@@ -10,6 +10,8 @@ import {
 import { globalLimiter } from "./middleware/rateLimit.middleware.js";
 
 import authRouter from "./modules/auth/auth.routes.js";
+import onboardingRouter from "./modules/onboarding/onboarding.routes.js";
+import devRouter from "./modules/dev/dev.routes.js";
 
 const app = express();
 
@@ -59,6 +61,12 @@ app.get("/health", (_req: Request, res: Response) => {
 app.use(globalLimiter);
 
 app.use("/auth", authRouter);
+app.use("/onboarding", onboardingRouter);
+
+// Dev/test-only cleanup tooling — never reachable once deployed.
+if (env.NODE_ENV !== "production") {
+  app.use("/dev", devRouter);
+}
 
 app.use(notFoundRoutes);
 app.use(appErrorHandler);
