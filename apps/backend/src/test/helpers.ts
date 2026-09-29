@@ -14,7 +14,8 @@ export const loginAsFakeUser = async (
   password: string,
 ): Promise<ReturnType<typeof request.agent>> => {
   const agent = request.agent(app);
-  prismaMock.user.findUnique.mockResolvedValue(user);
+  const userWithMembershipCount = { ...user, _count: { memberships: 0 } };
+  prismaMock.user.findUnique.mockResolvedValue(userWithMembershipCount);
 
   const response = await agent.post("/auth/login").send({
     email: user.email,
@@ -22,7 +23,9 @@ export const loginAsFakeUser = async (
   });
 
   if (response.status !== 200) {
-    throw new Error(`loginAsFakeUser: login failed with status ${response.status}`);
+    throw new Error(
+      `loginAsFakeUser: login failed with status ${response.status}`,
+    );
   }
 
   return agent;

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import argon2 from "argon2";
 import { prisma } from "@resolve-os/database";
+import type { JobRole, TeamSize } from "@resolve-os/database";
 import type {
   SignupRequest,
   SignupResponse,
@@ -184,7 +185,6 @@ export const verifyEmail = tryCatchWrapper(
 
 export const resendVerificationCode = tryCatchWrapper(
   async (req: Request, res: Response): Promise<void> => {
-
     if (req.user!.emailVerified) {
       sendError(
         res,
@@ -228,10 +228,12 @@ export const resendVerificationCode = tryCatchWrapper(
 
 const getOnboardingProgress = (user: {
   emailVerified: boolean;
+  jobRole: JobRole | null;
+  teamSize: TeamSize | null;
+  hasWorkspace: boolean;
 }): OnboardingState => {
-  const workspaceCreated = false;
-  const profileCompleted = false;
-
+  const workspaceCreated = user.hasWorkspace;
+  const profileCompleted = user.jobRole !== null && user.teamSize !== null;
   if (!user.emailVerified)
     return {
       status: "IN_PROGRESS",
@@ -284,6 +286,9 @@ export const loginUser = tryCatchWrapper(
         email: true,
         passwordHash: true,
         emailVerified: true,
+        jobRole: true,
+        teamSize: true,
+        _count: { select: { memberships: true } },
       },
     });
     if (!user || !user.passwordHash) {
@@ -316,7 +321,10 @@ export const loginUser = tryCatchWrapper(
         email: user.email,
         emailVerified: user.emailVerified,
       },
-      onboarding: getOnboardingProgress(user),
+      onboarding: getOnboardingProgress({
+        ...user,
+        hasWorkspace: user._count.memberships > 0,
+      }),
     };
     sendSuccess(res, 200, response);
   },
@@ -358,7 +366,15 @@ export const getSession = tryCatchWrapper(
     }
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      select: { id: true, fullName: true, email: true, emailVerified: true },
+      select: {
+        id: true,
+        fullName: true,
+        email: true,
+        emailVerified: true,
+        jobRole: true,
+        teamSize: true,
+        _count: { select: { memberships: true } },
+      },
     });
 
     if (!user) {
@@ -369,10 +385,18 @@ export const getSession = tryCatchWrapper(
     }
     const response: AuthSession = {
       authenticated: true,
-      user,
+      user: {
+        id: user.id,
+        fullName: user.fullName,
+        email: user.email,
+        emailVerified: user.emailVerified,
+      },
       activeWorkspace: null,
       membership: null,
-      onboarding: getOnboardingProgress(user),
+      onboarding: getOnboardingProgress({
+        ...user,
+        hasWorkspace: user._count.memberships > 0,
+      }),
     };
     sendSuccess(res, 200, response);
   },
@@ -390,7 +414,7 @@ export const forgotPassword = tryCatchWrapper(
       where: { email },
       select: { id: true, fullName: true, passwordHash: true },
     });
-    
+
     if (user && user.passwordHash) {
       const rawToken = crypto.randomBytes(32).toString("hex");
       const passwordResetTokenHash = crypto
@@ -404,7 +428,7 @@ export const forgotPassword = tryCatchWrapper(
         where: { id: user.id },
         data: { passwordResetTokenHash, passwordResetTokenExpires },
       });
-      const resetUrl = `${env.CLIENT_URL}/auth/reset-password?token=${rawToken}`;
+      const resetUrl = `${env.CLIENT_URL}/reset-password?token=${rawToken}`;
       const { subject, text, html } = passwordResetTemplate(
         user.fullName,
         resetUrl,
