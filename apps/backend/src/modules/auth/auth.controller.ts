@@ -237,6 +237,7 @@ const getOnboardingProgress = (user: {
   jobRole: JobRole | null;
   teamSize: TeamSize | null;
   hasWorkspace: boolean;
+  onboardingCompletedAt: Date | null;
 }): OnboardingState => {
   const workspaceCreated = user.hasWorkspace;
   const profileCompleted = user.jobRole !== null && user.teamSize !== null;
@@ -273,7 +274,7 @@ const getOnboardingProgress = (user: {
     emailVerified: true,
     workspaceCreated,
     profileCompleted,
-    completedAt: null,
+    completedAt: user.onboardingCompletedAt?.toISOString() ?? null,
   };
 };
 
@@ -294,6 +295,7 @@ export const loginUser = tryCatchWrapper(
         emailVerified: true,
         jobRole: true,
         teamSize: true,
+        onboardingCompletedAt: true,
         _count: { select: { memberships: true } },
       },
     });
@@ -379,7 +381,14 @@ export const getSession = tryCatchWrapper(
         emailVerified: true,
         jobRole: true,
         teamSize: true,
-        _count: { select: { memberships: true } },
+        onboardingCompletedAt: true,
+        memberships: {
+          take: 1,
+          select: {
+            role: true,
+            organization: { select: { id: true, name: true, slug: true } },
+          },
+        },
       },
     });
 
@@ -389,6 +398,8 @@ export const getSession = tryCatchWrapper(
       sendSuccess(res, 200, response);
       return;
     }
+    const membership = user.memberships[0] ?? null;
+
     const response: AuthSession = {
       authenticated: true,
       user: {
@@ -397,11 +408,17 @@ export const getSession = tryCatchWrapper(
         email: user.email,
         emailVerified: user.emailVerified,
       },
-      activeWorkspace: null,
-      membership: null,
+      activeWorkspace: membership
+        ? {
+            organizationId: membership.organization.id,
+            name: membership.organization.name,
+            slug: membership.organization.slug,
+          }
+        : null,
+      membership: membership ? { role: membership.role } : null,
       onboarding: getOnboardingProgress({
         ...user,
-        hasWorkspace: user._count.memberships > 0,
+        hasWorkspace: membership !== null,
       }),
     };
     sendSuccess(res, 200, response);

@@ -14,8 +14,15 @@ export const loginAsFakeUser = async (
   password: string,
 ): Promise<ReturnType<typeof request.agent>> => {
   const agent = request.agent(app);
-  const userWithMembershipCount = { ...user, _count: { memberships: 0 } };
-  prismaMock.user.findUnique.mockResolvedValue(userWithMembershipCount);
+  // loginUser and getSession request different Prisma select shapes off the
+  // same findUnique call — since Prisma is fully mocked, this one fixture
+  // has to satisfy both: loginUser's _count, and getSession's memberships.
+  const mockedUser = {
+    ...user,
+    _count: { memberships: 0 },
+    memberships: [],
+  };
+  prismaMock.user.findUnique.mockResolvedValue(mockedUser);
 
   const response = await agent.post("/auth/login").send({
     email: user.email,

@@ -6,6 +6,25 @@ import { sendError } from '../infrastructure/responseHandler.js';
 
 const isDev = env.NODE_ENV === 'development';
 
+// The session store (connect-pg-simple) talks to Postgres directly via a
+// raw `pg` Pool, bypassing Prisma entirely — so a database outage there
+// surfaces as a plain Node network error, not a Prisma error class. These
+// are the standard Node errno codes for "couldn't reach the host at all"
+// (DNS failure, refused connection, timed out), as opposed to a Postgres
+// error response (a real connection that returned an error), which would
+// have a different shape entirely.
+const DATABASE_CONNECTIVITY_ERROR_CODES = new Set([
+  'ENOTFOUND',
+  'EAI_AGAIN',
+  'ECONNREFUSED',
+  'ETIMEDOUT',
+]);
+
+const isDatabaseConnectivityError = (err: Error): boolean => {
+  const code = (err as NodeJS.ErrnoException).code;
+  return typeof code === 'string' && DATABASE_CONNECTIVITY_ERROR_CODES.has(code);
+};
+
 export class ErrorResponse extends Error {
   statusCode: number;
   // Machine-readable error code per the API contract, e.g. "UNAUTHENTICATED",
@@ -59,6 +78,15 @@ export const appErrorHandler = (
   } else if (err instanceof Prisma.PrismaClientInitializationError) {
     // Any failure to even establish a database connection. Never surface
     // `err.message` here — it names our actual Neon host.
+    statusCode = 503;
+    code = 'SERVICE_UNAVAILABLE';
+    message =
+      "We're having trouble reaching our database right now. Please try again in a moment.";
+  } else if (isDatabaseConnectivityError(err)) {
+    // Same underlying situation as PrismaClientInitializationError above —
+    // just reached through the session store's own raw pg connection
+    // instead of Prisma. Never surface `err.message` here either, for the
+    // same reason: it names our actual Neon host.
     statusCode = 503;
     code = 'SERVICE_UNAVAILABLE';
     message =

@@ -4,7 +4,11 @@ import argon2 from "argon2";
 import { AuthSessionSchema, LogoutResponseSchema } from "contracts";
 import app from "../../../app.js";
 import { prismaMock } from "../../../test/mocks/prisma.js";
-import { buildFakeUser } from "../../../test/fixtures.js";
+import {
+  buildFakeUser,
+  buildFakeOrganization,
+  buildFakeMembership,
+} from "../../../test/fixtures.js";
 import { loginAsFakeUser } from "../../../test/helpers.js";
 
 const CORRECT_PASSWORD = "ResolveOS!123";
@@ -34,6 +38,45 @@ describe("GET /auth/session", () => {
     expect(body).toMatchObject({
       authenticated: true,
       user: { id: fakeUser.id, email: fakeUser.email },
+    });
+  });
+
+  it("reports the real workspace, membership, and completion time once onboarding is fully done", async () => {
+    const completedAt = new Date();
+    const fakeUser = buildFakeUser({
+      passwordHash,
+      emailVerified: true,
+      jobRole: "SOFTWARE_ENGINEER",
+      teamSize: "SIX_TO_TWENTY",
+      onboardingCompletedAt: completedAt,
+    });
+    const agent = await loginAsFakeUser(app, fakeUser, CORRECT_PASSWORD);
+
+    const fakeOrganization = buildFakeOrganization();
+    const fakeMembership = buildFakeMembership();
+    const userWithMembership = {
+      ...fakeUser,
+      memberships: [{ role: fakeMembership.role, organization: fakeOrganization }],
+    };
+    prismaMock.user.findUnique.mockResolvedValue(userWithMembership);
+
+    const response = await agent.get("/auth/session");
+
+    expect(response.status).toBe(200);
+    const body = AuthSessionSchema.parse(response.body);
+    expect(body).toMatchObject({
+      authenticated: true,
+      activeWorkspace: {
+        organizationId: fakeOrganization.id,
+        name: fakeOrganization.name,
+        slug: fakeOrganization.slug,
+      },
+      membership: { role: fakeMembership.role },
+      onboarding: {
+        status: "COMPLETED",
+        nextStep: "COMPLETE",
+        completedAt: completedAt.toISOString(),
+      },
     });
   });
 
