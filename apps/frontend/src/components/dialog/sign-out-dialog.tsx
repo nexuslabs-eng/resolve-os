@@ -13,11 +13,11 @@ interface SignOutDialogProps {
   open: boolean;
   loading: boolean;
   onOpenChange: (open: boolean) => void;
-  onConfirm: () => void;
+  onConfirm: () => void | Promise<void>;
 }
 
 export const SignOutDialog = ({ open, loading, onOpenChange, onConfirm }: SignOutDialogProps) => (
-  <Dialog open={open} onOpenChange={onOpenChange}>
+  <Dialog open={open} onOpenChange={(nextOpen) => !loading && onOpenChange(nextOpen)}>
     <DialogPortal>
       <DialogBackdrop />
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -27,22 +27,19 @@ export const SignOutDialog = ({ open, loading, onOpenChange, onConfirm }: SignOu
             You will need to sign in again to access this workspace.
           </DialogDescription>
           <div className="mt-6 flex justify-end gap-2">
-            <Button type="button" variant="subtle" onClick={() => onOpenChange(false)}>
+            <Button type="button" variant="subtle" disabled={loading} onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
             <Button
               type="button"
               disabled={loading}
               variant="brand"
-              onClick={() => {
-                onOpenChange(false);
-                onConfirm();
-              }}
+              onClick={onConfirm}
             >
               {loading ? (
                 <>
                   <Loader aria-hidden="true" className="animate-spin" />
-                  Signing out...
+                  Signing out
                 </>
               ) : "Sign out"}
             </Button>

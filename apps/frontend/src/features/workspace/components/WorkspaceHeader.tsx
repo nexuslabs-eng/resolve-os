@@ -123,8 +123,13 @@ export const WorkspaceHeader = ({ onOpenNavigation, collapsed, onToggleSidebar }
         open={logoutDialogOpen}
         onOpenChange={setLogoutDialogOpen}
         loading={logout.isPending}
-        onConfirm={() => {
-          logout.mutate();
+        onConfirm={async () => {
+          try {
+            await logout.mutateAsync();
+            setLogoutDialogOpen(false);
+          } catch {
+            // Keep the dialog open so the user can retry.
+          }
         }}
       />
     </header>
