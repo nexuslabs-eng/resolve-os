@@ -17,6 +17,7 @@ import {
   getSession,
   forgotPassword,
   resetPassword,
+  validateResetToken,
 } from "./auth.controller.js";
 import { isAuthenticated } from "../../middleware/auth.middleware.js";
 import { googleCallBack, googleSignIn } from "./google.controller.js";
@@ -67,6 +68,8 @@ router.post(
   validateFormData(ResetPasswordRequestSchema),
   resetPassword,
 );
+
+router.get("/reset-password/validate", validateResetToken);
 
 router.get("/session", getSession);
 

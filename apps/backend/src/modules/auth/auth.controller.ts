@@ -17,8 +17,14 @@ import type {
   ForgotPasswordResponse,
   ResetPasswordRequest,
   ResetPasswordResponse,
+  ValidateResetTokenResponse,
 } from "contracts";
+import { PasswordResetTokenSchema } from "contracts";
 import tryCatchWrapper from "../../infrastructure/tryCatchWrapper.js";
+import {
+  findUserByResetToken,
+  isResetTokenExpired,
+} from "../../infrastructure/passwordResetToken.js";
 import {
   sendSuccess,
   sendError,
@@ -447,19 +453,7 @@ export const resetPassword = tryCatchWrapper(
   ): Promise<void> => {
     const { token, password } = req.body;
 
-    const passwordResetTokenHash = crypto
-      .createHash("sha256")
-      .update(token)
-      .digest("hex");
-    const user = await prisma.user.findUnique({
-      where: { passwordResetTokenHash },
-      select: {
-        id: true,
-        email: true,
-        fullName: true,
-        passwordResetTokenExpires: true,
-      },
-    });
+    const user = await findUserByResetToken(token);
     if (!user) {
       sendError(
         res,
@@ -469,10 +463,7 @@ export const resetPassword = tryCatchWrapper(
       );
       return;
     }
-    if (
-      !user.passwordResetTokenExpires ||
-      user.passwordResetTokenExpires < new Date()
-    ) {
+    if (isResetTokenExpired(user.passwordResetTokenExpires)) {
       sendError(
         res,
         400,
@@ -514,6 +505,43 @@ export const resetPassword = tryCatchWrapper(
       reset: true,
       completedAt: new Date().toISOString(),
     };
+    sendSuccess(res, 200, response);
+  },
+);
+
+export const validateResetToken = tryCatchWrapper(
+  async (req: Request, res: Response): Promise<void> => {
+    const result = PasswordResetTokenSchema.safeParse(req.query.token);
+
+    if (!result.success) {
+      sendError(
+        res,
+        400,
+        "PASSWORD_RESET_TOKEN_INVALID",
+        "This reset link is invalid.",
+      );
+      return;
+    }
+    const user = await findUserByResetToken(result.data);
+    if (!user) {
+      sendError(
+        res,
+        400,
+        "PASSWORD_RESET_TOKEN_INVALID",
+        "This reset link is invalid.",
+      );
+      return;
+    }
+    if (isResetTokenExpired(user.passwordResetTokenExpires)) {
+      sendError(
+        res,
+        400,
+        "PASSWORD_RESET_TOKEN_EXPIRED",
+        "This reset link has expired.",
+      );
+      return;
+    }
+    const response: ValidateResetTokenResponse = { valid: true };
     sendSuccess(res, 200, response);
   },
 );
