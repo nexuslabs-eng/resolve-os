@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 type StatusTone = "success" | "info";
+type IconStatus = "loading" | "idle";
 
 interface AuthStatusPanelProps {
   icon: LucideIcon;
@@ -12,6 +13,7 @@ interface AuthStatusPanelProps {
   children?: ReactNode;
   tone?: StatusTone;
   className?: string;
+  iconStatus?: IconStatus;
 }
 
 const toneStyles: Record<StatusTone, string> = {
@@ -20,6 +22,7 @@ const toneStyles: Record<StatusTone, string> = {
 };
 
 export const AuthStatusPanel = ({
+  iconStatus,
   icon: Icon,
   title,
   description,
@@ -29,14 +32,14 @@ export const AuthStatusPanel = ({
 }: AuthStatusPanelProps) => { 
     
     return (
-    <div className={cn("w-full", className)}>
+    <div className={cn("w-full flex flex-col", className)}>
         <div
         className={cn(
             "flex h-11 w-11 items-center justify-center rounded-md border",
             toneStyles[tone],
         )}
         >
-            <Icon aria-hidden="true" className="h-5 w-5" />
+            <Icon aria-hidden="true" className={cn("h-5 w-5", iconStatus === "loading" ? "animate-spin" : "")} />
         </div>
 
         <h1 className="mt-7 text-3xl font-semibold leading-tight text-foreground">
@@ -47,7 +50,7 @@ export const AuthStatusPanel = ({
         {description}
         </div>
 
-        {children ? <div className="mt-8">{children}</div> : null}
+        {children ? <div className="mt-8 self-start">{children}</div> : null}
     </div>
     )
 };

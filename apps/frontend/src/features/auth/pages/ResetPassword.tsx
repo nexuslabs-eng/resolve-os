@@ -1,8 +1,13 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ResetPasswordFormSchema, PasswordResetTokenSchema, type ResetPasswordForm } from "contracts";
+import {
+    ResetPasswordFormSchema,
+    PasswordResetTokenSchema,
+    type ResetPasswordForm,
+    type PasswordResetToken
+} from "contracts";
 import { Navigate, useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import { Check } from "lucide-react";
+import { Check, Loader } from "lucide-react";
 import { Field, FieldLabel, FieldError } from "@/components/ui/field";
 import { PasswordInput } from "@/features/auth/components/PasswordInput";
 import { AuthFormHeader } from "@/features/auth/components/AuthFormHeader";
@@ -12,27 +17,37 @@ import { AuthBackButton } from "@/features/auth/components/AuthBackButton";
 import { AuthSubmitButton } from "@/features/auth/components/AuthSubmitButton";
 import { resetPassword } from "@/features/auth/api/password-recovery";
 import { isApiClientError } from "@/lib/api/api-client-error";
+import { useQuery } from "@tanstack/react-query";
+import { passwordResetTokenQueryOptions } from "@/features/auth/queries/password-reset-token-query-options";
 
 const ResetPassword = () => {
     const [params] = useSearchParams();
     const navigate = useNavigate();
-    const token = PasswordResetTokenSchema.safeParse(params.get("token"));
+    const tokenResult = PasswordResetTokenSchema.safeParse(params.get("token"));
+
+    const resetToken: PasswordResetToken | undefined = tokenResult.success ? tokenResult.data : undefined;
+
+    const tokenValidation = useQuery({
+        ...passwordResetTokenQueryOptions(resetToken as PasswordResetToken),
+        enabled: Boolean(resetToken),
+    });
 
     const { 
         register, 
         handleSubmit, 
         setError, 
-        formState: { errors, isSubmitting } } = useForm<ResetPasswordForm>({
+        formState: { errors, isValid, isSubmitting } } = useForm<ResetPasswordForm>({
         resolver: zodResolver(ResetPasswordFormSchema), 
         defaultValues: { password: "", confirmPassword: "" }, 
         mode: "onChange",
     });
 
     const submit = async (values: ResetPasswordForm) => {
-        if (!token.success) return;
+        if (!resetToken) return;
 
         try {
-            await resetPassword({ token: token.data, password: values.password });
+            await resetPassword({ token: resetToken, password: values.password });
+
             navigate("/password-updated", {
                 replace: true,
                 state: { passwordUpdated: true },
@@ -60,7 +75,7 @@ const ResetPassword = () => {
         }
     };
 
-    if (!token.success) 
+    if (!resetToken) 
         return (
             <>
                 <AuthFormHeader 
@@ -75,6 +90,45 @@ const ResetPassword = () => {
                 />
             </>
         );
+
+    if (tokenValidation.isPending)
+        return (
+            <AuthStatusPanel
+                icon={Loader}
+                iconStatus="loading"
+                title="Checking reset link"
+                description="Validating your password reset link."
+            />
+        )
+
+    if (tokenValidation.isError) {
+        const code = isApiClientError(tokenValidation.error) ? tokenValidation.error.code : undefined;
+
+        const message =
+            code === "PASSWORD_RESET_TOKEN_EXPIRED"
+                ? "This reset link has expired. Request a new one."
+                : "This reset link is invalid or has already been used."
+
+        return (
+            <>
+                <AuthFormHeader title="Reset link unavailable" description={message} />
+
+                <AuthAlternateAction message="" linkLabel="Request new link" to="/forgot-password" />
+            </>
+        )
+    }
+
+    if (!tokenValidation.data?.valid)
+        return (
+            <>
+                <AuthFormHeader
+                    title="Invalid reset link"
+                    description="Request a new password reset link."
+                />
+
+                <AuthAlternateAction message="" linkLabel="Request new link" to="/forgot-password" />
+            </>
+        )
     
     return ( 
         <>
@@ -117,7 +171,8 @@ const ResetPassword = () => {
                 }
 
                 <AuthSubmitButton 
-                    loading={isSubmitting} 
+                    loading={isSubmitting}
+                    disabled={!isValid || isSubmitting}
                     loadingLabel="Updating password"
                 >
                     Update password
@@ -147,6 +202,7 @@ export const PasswordUpdated = () => {
             tone="success" 
             title="Password updated" 
             description="You can now sign in with your new password."
+            className=""
         >
             <AuthAlternateAction message="" linkLabel="Sign in" to="/login" />
         </AuthStatusPanel>

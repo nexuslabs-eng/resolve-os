@@ -1,12 +1,15 @@
 import { 
     ForgotPasswordRequestSchema,
     ForgotPasswordResponseSchema,
-    ResetPasswordRequestSchema, 
-    ResetPasswordResponseSchema, 
+    ResetPasswordRequestSchema,
+    ResetPasswordResponseSchema,
+    ValidateResetTokenResponseSchema,
     type ForgotPasswordRequest,
     type ForgotPasswordResponse,
     type ResetPasswordResponse,
-    type ResetPasswordRequest 
+    type ResetPasswordRequest,
+    type ValidateResetTokenResponse,
+    type PasswordResetToken
 } from "contracts";
 import { axiosClient } from "@/lib/api/axios-client";
 
@@ -20,6 +23,19 @@ export const forgotPassword = async (
 
     return ForgotPasswordResponseSchema.parse(response);
 };
+
+export const validateResetToken = async (
+    token: PasswordResetToken,
+): Promise<ValidateResetTokenResponse> => {
+    const response = await axiosClient.get<unknown, unknown>(
+        "/auth/reset-password/validate",
+        {
+            params: { token }
+        }
+    );
+
+    return ValidateResetTokenResponseSchema.parse(response);
+}
 
 export const resetPassword = async (
     input: ResetPasswordRequest,

@@ -22,8 +22,13 @@ export const router = createBrowserRouter([
     Component: App,
     children: [
       {
-        Component: MarketingLayout,
-        children: [{ index: true, Component: HomePage }],
+        Component: PublicRoute,
+        children: [
+          {
+            Component: MarketingLayout,
+            children: [{ index: true, Component: HomePage }],
+          }
+        ]
       },
 
       {
