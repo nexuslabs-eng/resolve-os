@@ -11,6 +11,7 @@ import { globalLimiter } from "./middleware/rateLimit.middleware.js";
 
 import authRouter from "./modules/auth/auth.routes.js";
 import onboardingRouter from "./modules/onboarding/onboarding.routes.js";
+import teamsRouter from "./modules/team/teams.routes.js";
 import devRouter from "./modules/dev/dev.routes.js";
 
 const app = express();
@@ -62,6 +63,7 @@ app.use(globalLimiter);
 
 app.use("/auth", authRouter);
 app.use("/onboarding", onboardingRouter);
+app.use(teamsRouter);
 
 // Dev/test-only cleanup tooling — never reachable once deployed.
 if (env.NODE_ENV !== "production") {

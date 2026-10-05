@@ -1,6 +1,7 @@
 export * from "./common/primitives.js";
 export * from "./common/enums.js";
 export * from "./common/api-error.schema.js";
+export * from "./common/pagination.schema.js";
 
 export * from "./organizations/organization.schema.js";
 export * from "./teams/team.schema.js";

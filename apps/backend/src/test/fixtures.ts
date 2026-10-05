@@ -1,8 +1,9 @@
-import type { Membership, Organization, User } from "@resolve-os/database";
+import type { Membership, Organization, Team, User } from "@resolve-os/database";
 
 export const MOCK_USER_ID = "99999999-9999-4999-8999-999999999999";
 export const MOCK_ORGANIZATION_ID = "88888888-8888-4888-8888-888888888888";
 export const MOCK_MEMBERSHIP_ID = "77777777-7777-4777-8777-777777777777";
+export const MOCK_TEAM_ID = "66666666-6666-4666-8666-666666666666";
 
 export const buildFakeUser = (overrides: Partial<User> = {}): User => ({
   id: MOCK_USER_ID,
@@ -44,5 +45,14 @@ export const buildFakeMembership = (
   organizationId: MOCK_ORGANIZATION_ID,
   role: "ADMIN",
   createdAt: new Date(),
+  ...overrides,
+});
+
+export const buildFakeTeam = (overrides: Partial<Team> = {}): Team => ({
+  id: MOCK_TEAM_ID,
+  organizationId: MOCK_ORGANIZATION_ID,
+  name: "Platform Team",
+  createdAt: new Date(),
+  updatedAt: new Date(),
   ...overrides,
 });
