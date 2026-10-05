@@ -7,6 +7,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "dev": "tsx watch src/server.ts",
+    "dev:e2e": "tsx watch --env-file=.env.test src/server.ts",
     "build": "tsc --noEmit",
     "start": "tsx src/server.ts",
     "lint": "eslint ."
